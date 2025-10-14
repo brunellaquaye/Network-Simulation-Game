@@ -141,3 +141,4 @@ vite.config.ts.timestamp-*
 /src/generated/prisma
 
 /src/endpoints.rest
+/src/utils/simulator.ts

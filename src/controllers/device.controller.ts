@@ -21,7 +21,7 @@ export async function addDevices(req:Request, res:Response, next:Function) {
      try {
         
         const {scenarioId,name, type}: {name: string, type: string, scenarioId: number} = req.body
-        const result =await addNewDevice({scenarioId:scenarioId,name:name,type:type});
+        const result = await addNewDevice({scenarioId:scenarioId,name:name,type:type});
         
         return res.status(201).json({ message: 'Successfully Created Device', data : result });
         
@@ -54,7 +54,7 @@ export async function removeDevice(req:Request, res:Response, next:Function) {
         const result =await deleteDevice({id:id});
         if (result == null) return res.status(404).json({status: 404, message: 'No devices found' });
         
-        return res.status(201).json({ message: 'Successful Device Removal', data : result });
+        return res.status(204).json({ message: 'Successful Device Removal', data : result });
         
     } catch (error) {
         next(error);

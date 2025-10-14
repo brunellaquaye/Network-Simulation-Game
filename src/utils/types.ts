@@ -1,4 +1,4 @@
-interface device {
+export interface Device {
     id: number;
     name: string;
     type: string;        // router, switch, server

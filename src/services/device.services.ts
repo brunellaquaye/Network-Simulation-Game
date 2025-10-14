@@ -26,7 +26,7 @@ export async function changeDeviceDetails({id, name}: {id:number, name: string})
 
 export async function deleteDevice({id}: {id: number} ) {
     const results = await prisma.device.delete({
-        where: { id: 2 } 
+        where: { id: id } 
     });
     return results;
 }

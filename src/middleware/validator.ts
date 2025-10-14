@@ -17,8 +17,6 @@ const deviceSchema = Joi.object({
 
 export function deviceValidator ( req:Request, res:Response, next:NextFunction) {
     const {error} = deviceSchema.validate(req.body)
-    if(error) {
-        next(error)
-    }
+    if(error) return next(error)
     next()
 }
