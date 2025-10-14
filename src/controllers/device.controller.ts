@@ -17,6 +17,7 @@ export async function getDevices(req:Request, res:Response, next:Function) {
 
 }
 
+// todo: add more parameters to the request body
 export async function addDevices(req:Request, res:Response, next:Function) {
      try {
         
@@ -32,6 +33,7 @@ export async function addDevices(req:Request, res:Response, next:Function) {
 
 }
 
+// todo: add more parameters to the request body
 export async function renameDevice(req:Request, res:Response, next:Function) {
      try {
         const id = parseInt(req.params.id);

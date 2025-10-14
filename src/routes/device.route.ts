@@ -3,7 +3,7 @@ import { getDevices,addDevices, renameDevice, removeDevice} from '../controllers
 import { deviceValidator } from '../middleware/validator';
 const router = express.Router();
 
-// Example route for devices
+
 router.route('/')
 .get(deviceValidator,getDevices)
 .post(deviceValidator,addDevices)
