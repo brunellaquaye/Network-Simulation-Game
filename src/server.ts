@@ -1,5 +1,7 @@
 import express, {Request, Response} from 'express';
 import deviceRoutes from './routes/device.route';
+import authenticationRoutes from './routes/auth.route'
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,11 +14,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/devices', deviceRoutes);
 
+app.use('/api/authentication', authenticationRoutes);
 
 // define a simple route
 app.get("/", (req: Request, res: Response) => {
     res.json({message: "Hello, World!"});
 });
+
 
 
 
