@@ -25,13 +25,15 @@ const UserSchema = Joi.object({
   id: Joi.forbidden(),
   username: Joi.string().min(3).max(30).optional(),
   email: Joi.string().email().required(),
-  role: Joi.string().valid("player","admin"),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required()
+  role: Joi.string().valid("player","admin").required(),
+  password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,30}$')).required()
 })
+
+
 export function userValidator (req: Request, res: Response, next: NextFunction){
   const {error} = UserSchema.validate(req.body)
   if(error) return next(error);
-  console.log("validation passed")
+  
   next()
 
 }

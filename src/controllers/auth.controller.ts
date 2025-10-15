@@ -8,16 +8,11 @@ export const signup = async(req:Request, res:Response)=>{
     const {email, password, username, role} = req.body;
 
     // checking if all fields are valid
-    if (!email || !password || !username || !role){
-        return res.status(400).json({
-            error: "Input all fields"
-        });
-    }
-    
+  
     // Check if user already exists
     const oldUser = await prisma.user.findFirst({where: {email}})
     if (oldUser){
-        // throw Error('User already exists!')
+        
         return res.status(400).json({error: 'User already exist with this email'});
     }
     // if user does not exist, we proceed to create the user
@@ -34,13 +29,10 @@ export const signup = async(req:Request, res:Response)=>{
 
     return res.status(201).json(
         newUser
-        // user: 
-        // res.json(newUser)
-
+        
     );
 
 } catch(error:any){
-    return res.status(500).json({
-        error:error.message
-    })
+    console.error(error);
+    return res.status(500).json({ error: "An unexpected error occurred." });
 }}
