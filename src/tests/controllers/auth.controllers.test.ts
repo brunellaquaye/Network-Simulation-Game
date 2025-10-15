@@ -69,10 +69,27 @@ describe("Auth Controller for Signup", () => {
       id: 1,
       username: "usertert",
       email: "tetnn@gmail.com",
-      password: "hashedPassword",
       role: "player",
     });
   });
+
+  it("should return 400 if user already exists", async () => {
+    (prisma.user.findFirst as jest.Mock).mockResolvedValueOnce({
+      id: 1,
+      email: "tetnn@gmail.com",
+    });
+
+    await signup(req, res);
+
+    expect(prisma.user.findFirst).toHaveBeenCalledWith({
+      where: { email: "tetnn@gmail.com" },
+    });
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "User already exist with this email",
+    });
+  });
+
 
 
  });
