@@ -30,6 +30,6 @@ const scenarioSchema = Joi.object({
 
 export function scenarioValidator ( req:Request, res:Response, next:NextFunction) {
     const {error} = scenarioSchema.validate(req.body)
-    if(error) return next(error)
+    if(error) return next(error);
     next()
 }
