@@ -39,7 +39,7 @@ describe("Auth Controller for Signup", () => {
 
   
   it("should send status code 201 when user is created", async () => {
-    (prisma.user.findFirst as jest.Mock).mockResolvedValueOnce(null); // No existing user
+    (prisma.user.findFirst as jest.Mock).mockResolvedValueOnce(null); 
     (prisma.user.create as jest.Mock).mockResolvedValueOnce({
       id: 1,
       username: "usertert",
@@ -64,7 +64,7 @@ describe("Auth Controller for Signup", () => {
         role: "player",
       },
     });
-    expect(res.status).not.toHaveBeenCalledWith(400); // Not a bad request
+    expect(res.status).not.toHaveBeenCalledWith(400); 
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
       username: "usertert",
