@@ -75,8 +75,8 @@ describe('Device Services', () => {
 
   describe('changeDeviceDetails', () => {
     it('should update and return the device details and call prisma.update with correct where/data', async () => {
-      const payload = { id: 1, name: 'Updated Device A' };
-      const updated = { id: 1, name: 'Updated Device A' };
+      const payload = { id: 1, name: 'Updated Device A', type: "router", scenarioId:1};
+      const updated = { id: 1, name: 'Updated Device A', type: "router", scenarioId:1};
       (prisma.device.update as jest.Mock).mockResolvedValue(updated);
 
       const result = await changeDeviceDetails(payload);
@@ -85,7 +85,7 @@ describe('Device Services', () => {
       expect(prisma.device.update).toHaveBeenCalledTimes(1);
       expect(prisma.device.update).toHaveBeenCalledWith({
         where: { id: payload.id },
-        data: { name: payload.name },
+        data: { name: payload.name,type: payload.type},
       });
     });
   });
