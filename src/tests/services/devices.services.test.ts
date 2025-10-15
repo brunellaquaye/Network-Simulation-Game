@@ -1,3 +1,4 @@
+
 jest.mock('../../config/db', () => {
   const deviceFns = {
     findMany: jest.fn(),
@@ -14,46 +15,14 @@ jest.mock('../../config/db', () => {
   };
 });
 
-const { prisma } = require('../../config/db');
-const { getAllDevices, addNewDevice, changeDeviceDetails, deleteDevice } = require('../../services/device.services');
+import  prisma  from '../../config/db';
+import { devices } from '../mockData';
+import { getAllDevices, addNewDevice, changeDeviceDetails, deleteDevice } from '../../services/device.services';
 
-const devices = [
-  {
-    id: 1,
-    name: 'Updated Device A',
-    type: 'router',
-    pingRate: null,
-    latency: null,
-    trafficLoad: null,
-    status: 'online',
-    lastUpdated: '2025-10-13T17:16:36.040Z',
-    scenarioId: 1,
-  },
-  {
-    id: 3,
-    name: 'Device A',
-    type: 'router',
-    pingRate: null,
-    latency: null,
-    trafficLoad: null,
-    status: 'online',
-    lastUpdated: '2025-10-13T17:24:33.186Z',
-    scenarioId: 1,
-  },
-  {
-    id: 4,
-    name: 'Updated Device A',
-    type: 'router',
-    pingRate: null,
-    latency: null,
-    trafficLoad: null,
-    status: 'online',
-    lastUpdated: '2025-10-13T17:59:25.590Z',
-    scenarioId: 1,
-  },
-];
 
-mockSample=devices[0];
+
+
+let mockSample = devices[0];
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -62,14 +31,14 @@ beforeEach(() => {
 describe('Device Services', () => {
   describe('getAllDevices', () => {
     it('should return all devices', async () => {
-      prisma.device.findMany.mockResolvedValue(devices);
+      (prisma.device.findMany as jest.Mock).mockResolvedValue(devices);
       const result = await getAllDevices();
       expect(result).toBe(devices);
       expect(prisma.device.findMany).toHaveBeenCalledTimes(1);
     });
 
     it('should return an empty array when no devices exist', async () => {
-      prisma.device.findMany.mockResolvedValue([]);
+      (prisma.device.findMany as jest.Mock).mockResolvedValue([]);
       const result = await getAllDevices();
       expect(result).toEqual([]);
       expect(prisma.device.findMany).toHaveBeenCalled();
@@ -81,7 +50,7 @@ describe('Device Services', () => {
     it('should create and return a new device and call prisma.create with correct data', async () => {
       const newDevice = { scenarioId: 1, name: 'Device A', type: 'router' };
       const created = { id: 4, ...newDevice };
-      prisma.device.create.mockResolvedValue(created);
+      (prisma.device.create as jest.Mock).mockResolvedValue(created);
 
       const result = await addNewDevice(newDevice);
       expect(result).toEqual(created);
@@ -99,7 +68,7 @@ describe('Device Services', () => {
 
     it('should propagate errors from prisma.create', async () => {
       const newDevice = { scenarioId: 1, name: 'Device A', type: 'router' };
-      prisma.device.create.mockRejectedValue(new Error('Create failed'));
+      (prisma.device.create as jest.Mock).mockRejectedValue(new Error('Create failed'));
       await expect(addNewDevice(newDevice)).rejects.toThrow('Create failed');
     });
   });
@@ -108,7 +77,7 @@ describe('Device Services', () => {
     it('should update and return the device details and call prisma.update with correct where/data', async () => {
       const payload = { id: 1, name: 'Updated Device A' };
       const updated = { id: 1, name: 'Updated Device A' };
-      prisma.device.update.mockResolvedValue(updated);
+      (prisma.device.update as jest.Mock).mockResolvedValue(updated);
 
       const result = await changeDeviceDetails(payload);
       expect(result).toEqual(updated);
@@ -123,7 +92,7 @@ describe('Device Services', () => {
 
   describe('deleteDevice', () => {
     it('should delete and return the deleted device and call prisma.delete with correct where', async () => {
-      prisma.device.delete.mockResolvedValue(mockSample);
+      (prisma.device.delete as jest.Mock).mockResolvedValue(mockSample);
 
       const result = await deleteDevice({ id: 1 });
       expect(result).toEqual(mockSample);
