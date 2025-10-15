@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.route('/')
-.get(deviceValidator,getDevices)
+.get(getDevices)
 .post(deviceValidator,addDevices)
 
 router.route('/:id')
