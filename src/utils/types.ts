@@ -5,6 +5,6 @@ export type Device = {
     pingRate?: number;
     latency?: number;
     trafficLoad?: number;
-    status?: string;     // online/offline
+    status?: 'online' | 'offline';     // online/offline
     lastUpdated?: Date;
 }
