@@ -1,9 +1,9 @@
 import prisma from '../config/db';
 
-export async function getAllScenarios({id}: {id: number}) {
+export async function getAllScenarios({id, Userid}: {id: number,Userid: number}) {
     const results = await prisma.scenario.findMany({
             where: {
-                userId: id
+                userId: Userid
             }
         });
     return results;
