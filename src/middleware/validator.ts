@@ -33,3 +33,22 @@ export function scenarioValidator ( req:Request, res:Response, next:NextFunction
     if(error) return next(error);
     next()
 }
+
+
+// authentication validator
+const UserSchema = Joi.object({
+  id: Joi.forbidden(),
+  username: Joi.string().min(3).max(30).optional(),
+  email: Joi.string().email().required(),
+  role: Joi.string().valid("player","admin").required(),
+  password: Joi.string().required()
+})
+
+
+export function userValidator (req: Request, res: Response, next: NextFunction){
+  const {error} = UserSchema.validate(req.body)
+  if(error) return next(error);
+  
+  next()
+
+}
