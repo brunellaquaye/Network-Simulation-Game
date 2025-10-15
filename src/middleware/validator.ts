@@ -26,7 +26,7 @@ const UserSchema = Joi.object({
   username: Joi.string().min(3).max(30).optional(),
   email: Joi.string().email().required(),
   role: Joi.string().valid("player","admin").required(),
-  password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,30}$')).required()
+  password: Joi.string().required()
 })
 
 
