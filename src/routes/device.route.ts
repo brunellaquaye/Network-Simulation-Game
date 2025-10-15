@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDevices,addDevices, renameDevice, removeDevice} from '../controllers/device.controller';
+import { getDevices,addDevices, editDevice, removeDevice} from '../controllers/device.controller';
 import { deviceValidator } from '../middleware/validator';
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.route('/')
 .post(deviceValidator,addDevices)
 
 router.route('/:id')
-.patch(renameDevice)
+.patch(deviceValidator,editDevice)
 .delete(removeDevice)
 
 

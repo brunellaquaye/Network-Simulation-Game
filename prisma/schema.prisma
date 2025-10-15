@@ -15,82 +15,77 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  username    String
-  password    String
-  role        String        @default("player") // 'admin' or 'player'
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String
+  password  String
+  role      String   @default("player") // 'admin' or 'player'
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  
-  scenarios   Scenario[]
-  states      State[]
+  scenarios    Scenario[]
+  states       State[]
   leaderboards Leaderboard[]
 }
 
 model Scenario {
-  id          Int           @id @default(autoincrement())
-  name        String
-  difficulty  String
-  timeLimit   Int
-  createdAt   DateTime      @default(now())
+  id         Int      @id @default(autoincrement())
+  name       String
+  difficulty String
+  timeLimit  Int
+  createdAt  DateTime @default(now())
 
-  
-  userId      Int
-  user        User          @relation(fields: [userId], references: [id])
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 
- 
-  devices     Device[]
+  devices      Device[]
   leaderboards Leaderboard[]
 }
 
 model Device {
-  id            Int          @id @default(autoincrement())
-  name          String
-  type          String        // router, switch, server
-  pingRate      Float?
-  latency       Float?
-  trafficLoad   Float?
-  status        String        @default("online") // online/offline
-  lastUpdated   DateTime      @default(now())
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String // router, switch, server, pc, firewall,
+  ipAddress   String?  @unique
+  pingRate    Float    @default(10)
+  latency     Float    @default(500)
+  trafficLoad Float    @default(12)
+  status      String   @default("online") // online/offline
+  lastUpdated DateTime @default(now())
 
-  
-  scenarioId    Int
-  scenario      Scenario      @relation(fields: [scenarioId], references: [id])
+  scenarioId Int
+  scenario   Scenario @relation(fields: [scenarioId], references: [id])
 
- 
-  logs          Log[]
+  logs Log[]
 }
 
 model Log {
-  id          Int         @id @default(autoincrement())
-  deviceId    Int
-  device      Device      @relation(fields: [deviceId], references: [id])
-  timestamp   DateTime    @default(now())
-  eventType   String
-  message     String
+  id        Int      @id @default(autoincrement())
+  deviceId  Int
+  device    Device   @relation(fields: [deviceId], references: [id])
+  timestamp DateTime @default(now())
+  eventType String
+  message   String
 }
 
 model Leaderboard {
-  id          Int         @id @default(autoincrement())
-  playerName  String
-  score       Int
-  timestamp   DateTime    @default(now())
+  id         Int      @id @default(autoincrement())
+  playerName String
+  score      Int
+  timestamp  DateTime @default(now())
 
- 
-  userId      Int
-  user        User        @relation(fields: [userId], references: [id])
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 
-  scenarioId  Int
-  scenario    Scenario    @relation(fields: [scenarioId], references: [id])
+  scenarioId Int
+  scenario   Scenario @relation(fields: [scenarioId], references: [id])
 }
 
 model State {
-  id          Int         @id @default(autoincrement())
-  userId      Int
-  user        User        @relation(fields: [userId], references: [id])
-  data        Json
-  version     Int         
-  createdAt   DateTime    @default(now())
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  data      Json
+  version   Int
+  createdAt DateTime @default(now())
 }

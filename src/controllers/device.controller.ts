@@ -1,7 +1,8 @@
 import {Request,Response} from 'express';
 import { changeDeviceDetails, getAllDevices, addNewDevice, deleteDevice } from '../services/device.services';
+import { Device } from '../utils/types';
 
-
+// todo: handle prisma crud errors
 
 export async function getDevices(req:Request, res:Response, next:Function) {
      try {
@@ -20,8 +21,8 @@ export async function getDevices(req:Request, res:Response, next:Function) {
 export async function addDevices(req:Request, res:Response, next:Function) {
      try {
         
-        const {scenarioId,name, type}: {name: string, type: string, scenarioId: number} = req.body
-        const result = await addNewDevice({scenarioId:scenarioId,name:name,type:type});
+        const {scenarioId,name, type,ipAddress,pingRate,latency,trafficLoad}: Device= req.body
+        const result = await addNewDevice({scenarioId:scenarioId,name:name,type:type,ipAddress:ipAddress,pingRate:pingRate,latency:latency,trafficLoad:trafficLoad});
         
         return res.status(201).json({ message: 'Successfully Created Device', data : result });
         
@@ -32,14 +33,15 @@ export async function addDevices(req:Request, res:Response, next:Function) {
 
 }
 
-export async function renameDevice(req:Request, res:Response, next:Function) {
+
+export async function editDevice(req:Request, res:Response, next:Function) {
      try {
         const id = parseInt(req.params.id);
-        const name: string = req.body.name
-        const result =await changeDeviceDetails({id:id, name:name});
+        const {name, type,ipAddress,pingRate,latency,trafficLoad,scenarioId}: Device= req.body
+        const result =await changeDeviceDetails({id:id, name:name, type:type,ipAddress:ipAddress,pingRate:pingRate,latency:latency,trafficLoad:trafficLoad,scenarioId:scenarioId});
         if (result == null) return res.status(404).json({status: 404, message: 'No devices found' });
         
-        return res.status(200).json({ message: 'Successfully Renamed Device', data : result });
+        return res.status(200).json({ message: 'Successfully Changed Device Details', data : result });
         
     } catch (error) {
         next(error);
