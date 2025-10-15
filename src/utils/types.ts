@@ -8,3 +8,12 @@ export type Device = {
     status?: string;     // online/offline
     lastUpdated?: Date;
 }
+
+export type Scenario = {
+    id: number;
+    name: string;
+    difficulty?: string;
+    timeLimit?: number;
+    createdAt: Date;
+    userId: number
+}
