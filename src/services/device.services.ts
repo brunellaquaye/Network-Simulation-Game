@@ -1,25 +1,38 @@
 import prisma from '../config/db';
+import { Device } from '../utils/types';
 
 export async function getAllDevices() {
     const results = await prisma.device.findMany();
     return results;
 }
 
-export async function addNewDevice({scenarioId,name, type}: {scenarioId: number,name: string, type: string}) {
+export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
     const results = await prisma.device.create({
         data: {
             scenarioId : scenarioId,
             name: name,
-            type: type
+            type: type,
+            ipAddress: ipAddress,
+            pingRate: pingRate,
+            latency: latency,
+            trafficLoad: trafficLoad
         }
     });
     return results;
 }
 
-export async function changeDeviceDetails({id, name}: {id:number, name: string}) {
+// todo: decide if scenario is changeable
+export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
     const results = await prisma.device.update({
         where: { id: id }, 
-        data: { name: name }
+        data: { 
+            name: name,
+            type: type,
+            ipAddress: ipAddress,
+            pingRate: pingRate,
+            latency: latency,
+            trafficLoad: trafficLoad
+         }
     });
     return results;
 }

@@ -5,6 +5,7 @@ const deviceSchema = Joi.object({
   id: Joi.forbidden(),
   name: Joi.string().min(3).max(30).required(),
   type: Joi.string().required(),
+  ipAddress: Joi.string().ip({ version: ['ipv4', 'ipv6'] }).optional(),
   pingRate: Joi.number().min(1).max(100).optional(),
   latency: Joi.number().min(0).max(1000).optional(),
   trafficLoad: Joi.number().min(0).max(100).optional(),

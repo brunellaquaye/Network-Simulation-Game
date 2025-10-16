@@ -1,10 +1,12 @@
 export type Device = {
-    id: number;
+    id?: number;
     name: string;
     type: string;        // router, switch, server
+    ipAddress?: string;
     pingRate?: number;
     latency?: number;
     trafficLoad?: number;
     status?: 'online' | 'offline';     // online/offline
+    scenarioId: number;
     lastUpdated?: Date;
 }
