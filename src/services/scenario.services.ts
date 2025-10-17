@@ -12,7 +12,8 @@ export async function getAllScenarios({ Userid}: {Userid: number}) {
 
 export async function getSpecificScenarios({id: id}: {id: number}) {
     const results = await prisma.scenario.findMany({
-            where: { id: id}
+            where: { id: id},
+            include: {devices: true}
         });
     return results;
 }
