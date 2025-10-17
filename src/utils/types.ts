@@ -12,10 +12,10 @@ export type Device = {
 }
 
 export type Scenario = {
-    id: number;
+    id?: number;
     name: string;
-    difficulty?: string;
-    timeLimit?: number;
-    createdAt: Date;
+    difficulty: 'easy'|'medium'|'hard';
+    timeLimit: number;
+    createdAt?: Date;
     userId: number
 }

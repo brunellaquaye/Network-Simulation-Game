@@ -24,7 +24,7 @@ export function deviceValidator ( req:Request, res:Response, next:NextFunction) 
 const scenarioSchema = Joi.object({
     id: Joi.forbidden(),
     name: Joi.string(),
-    difficulty: Joi.string().valid(),
+    difficulty: Joi.string().valid('easy','medium','hard'),
     timeLimit: Joi.number(),
     userId: Joi.number()
 })

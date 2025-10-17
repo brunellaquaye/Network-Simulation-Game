@@ -21,8 +21,9 @@ export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,lat
     return results;
 }
 
-// todo: decide if scenario is changeable
+
 export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
+    const check = await prisma.device.findFirst({where: {id}}); if (!check) return null;
     const results = await prisma.device.update({
         where: { id: id }, 
         data: { 
@@ -38,6 +39,7 @@ export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,late
 }
 
 export async function deleteDevice({id}: {id: number} ) {
+    const check = await prisma.device.findFirst({where: {id}}); if (!check) return null;
     const results = await prisma.device.delete({
         where: { id: id } 
     });

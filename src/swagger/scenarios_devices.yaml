@@ -1,0 +1,524 @@
+openapi: 3.0.4
+info:
+  title:  Network Simulation Game
+  description: |-
+    A documentation for a network simulation game
+
+    Some useful links:
+    - [The device repository](https://github.com/brunellaquaye/Network-Simulation-Game.git)
+  version: v0.1
+    
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: device
+    description: Everything about devices
+  - name: scenario
+    description: Everyting about scenarios
+paths:
+  /device:
+    get:
+      tags: [device]
+      summary: Get All existing devices
+      responses:
+        '200' :
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/device'
+        '404' :
+          description: No devices found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/device'
+
+    post:
+      tags:
+        - device
+      summary: Add a new device.
+      description: Add a new device.
+      operationId: add device
+      requestBody:
+        description: Create a new device 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/device'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/device'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/device'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - devicestore_auth:
+            - write:devices
+            - read:devices
+  /device/{deviceId}:
+    patch:
+      tags:
+        - device
+      summary: Update an existing device.
+      description: Update an existing device by Id.
+      operationId: updatedevice
+      parameters:
+        - name: deviceId
+          in: path
+          description: ID of device to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Create a new device 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/device'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/device'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/device'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/device'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/device'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: device not found
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - devicestore_auth:
+            - write:devices
+            - read:devices
+    delete:
+      tags:
+        - device
+      summary: Deletes a device.
+      description: Delete a device.
+      operationId: deletedevice
+      parameters:
+        # - name: api_key
+        #   in: header
+        #   description: ''
+        #   required: false
+        #   schema:
+        #     type: string
+        - name: deviceId
+          in: path
+          description: device id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: device deleted
+        '400':
+          description: Invalid device value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - devicestore_auth:
+            - write:devices
+            - read:devices
+  /users/{userId}/scenarios:
+    get:
+      tags:
+        - scenario
+      summary: Find All scenarios of user.
+      description: Returns a scenario.
+      operationId: getUsersScenario
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/scenario'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/scenario'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: device not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+        - devicestore_auth:
+            - write:devices
+            - read:devices
+  /scenario/{userId}:
+    post:
+      tags:
+        - scenario
+      summary: Add a new scenario.
+      description: Add a new scenario using admin Id.
+      operationId: add scenario
+      parameters:
+        - name: userId
+          in: path
+          description: ID of admin to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Create a new scenario 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/scenario'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/scenario'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/scenario'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/scenario'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - scenariostore_auth:
+            - write:scenarios
+            - read:scenarios
+  /scenario/{scenarioId}:
+    get:
+      tags:
+        - scenario
+      summary: Find scenario by ID.
+      description: Returns a scenario.
+      operationId: getScenarioById
+      parameters:
+        - name: scenarioId
+          in: path
+          description: ID of scenario to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/scenario'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/scenario'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: scenario not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+        - scenariostore_auth:
+            - write:scenarios
+            - read:scenarios
+    patch:
+      tags:
+        - scenario
+      summary: Update an existing scenario.
+      description: Update an existing scenario by Id.
+      operationId: updatescenario
+      parameters:
+        - name: scenarioId
+          in: path
+          description: ID of scenario to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Create a new scenario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/scenario'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/scenario'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/scenario'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/scenario'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/scenario'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: scenario not found
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - scenariostore_auth:
+            - write:scenarios
+            - read:scenarios
+    delete:
+      tags:
+        - scenario
+      summary: Deletes a scenario.
+      description: Delete a scenario.
+      operationId: userId
+      parameters:
+        - name: api_key
+          in: header
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: scenarioId
+          in: path
+          description: scenario id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: scenario deleted
+        '400':
+          description: Invalid scenario value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - scenariostore_auth:
+            - write:scenarios
+            - read:scenarios
+components:
+  schemas:
+    device:
+      required:
+        - name
+        - type
+        - userId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: WestWing Router
+        type:
+          type: string
+          example: Router
+        ipAddress:
+          type: string
+          example: 192.168.1.1
+        pingRate:
+          type: integer
+          description: 10ms
+        latency:
+          type: integer
+          description: 100ms
+        trafficLoad:
+          type: integer
+          description: 100ms
+        status:
+          enum:
+            - online
+            - offline
+        userId: 
+          type: integer
+          example: 1
+      xml:
+        name: device
+    scenario:
+      required:
+        - name
+        - userId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Universe 1
+        difficulty:
+          enum:
+            - online
+            - offline
+        timeLimit:
+          type: integer
+          example: 2
+        userId: 
+          type: integer
+          example: 1
+      xml:
+        name: scenario
+       
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+  requestBodies:
+    device:
+      description: device object that needs to be added to scenarios
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/device'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/device'
+    scenario:
+      description: scenarios for simulations
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/scenario'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/scenario'
+    
+  securitySchemes:
+    devicestore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://devicestore3.swagger.io/oauth/authorize
+          scopes:
+            "write:devices": modify devices in your account
+            "read:devices": read your devices
+    scenariostore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://scenariostore3.swagger.io/oauth/authorize
+          scopes:
+            "write:scenarios": modify scenarios in your account
+            "read:scenarios": read your scenarios
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
