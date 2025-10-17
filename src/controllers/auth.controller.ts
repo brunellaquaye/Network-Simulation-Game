@@ -1,7 +1,7 @@
 import {Request , Response} from 'express';
 import prisma from '../config/db';
 import {hashSync, compareSync} from 'bcrypt';
-import lodash from 'lodash';
+import {pick} from 'lodash';
 import * as jwt from 'jsonwebtoken'
 const JWT_SECRET = process.env.JWT_SECRET! ;
 
@@ -23,8 +23,7 @@ export const signup = async(req:Request, res:Response)=>{
         }
     })
 
-    return res.status(201).json(
-        lodash.pick(newUser,['id','username','email','role'])
+    return res.status(201).json(pick(newUser,['id','username','email','role'])
     );
 
 } catch(error:any){
@@ -48,17 +47,21 @@ export const signin = async(req:Request, res:Response)=>{
     if(!compareSync(password, oldUser.password)){
         throw Error('Incorrect password or username')
     }
-    const token = jwt.sign({
-        id: oldUser.id
-    }, JWT_SECRET)
+  // Generate token
+    const token = jwt.sign({ id: oldUser.id }, JWT_SECRET, { expiresIn: "1h" });
 
+    // Set token in an HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true, // Prevents JavaScript access
+      secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+      sameSite: 'strict', // Prevents CSRF attacks
+      maxAge: 3600000, // 1 hour in milliseconds
+    });
 
-    res.json(
-        lodash.pick(oldUser,['id','username','email','role'])
-        // token is also returned
-        // {oldUser, token}
-    )
-
+    // Return user info without the token
+    res.json({
+      user: pick(oldUser, ['id', 'username', 'email', 'role']),
+    });
 } catch(error:any){
     console.error(error);
     return res.status(500).json({ error: "An unexpected error occurred." });
