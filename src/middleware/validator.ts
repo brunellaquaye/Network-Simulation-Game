@@ -33,7 +33,18 @@ const UserSchema = Joi.object({
 export function userValidator (req: Request, res: Response, next: NextFunction){
   const {error} = UserSchema.validate(req.body)
   if(error) return next(error);
-  
   next()
 
+}
+
+const UserSigninSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  role: Joi.string().valid("player", "admin").optional(),
+});
+
+export function signinValidator(req: Request, res: Response, next: NextFunction) {
+  const { error } = UserSigninSchema.validate(req.body);
+  if (error) return next(error);
+  next();
 }

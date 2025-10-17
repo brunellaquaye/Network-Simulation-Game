@@ -1,16 +1,18 @@
+
 // routes for authentication
 import express from 'express'
 
-import {signup} from '../controllers/auth.controller'
-import { userValidator } from '../middleware/validator';
+import {signup,signin} from '../controllers/auth.controller'
+import { userValidator,signinValidator } from '../middleware/validator';
 
 
 
 const router = express.Router();
 
-router.route('/')
+router.route('/signup')
 .post(userValidator,signup)
-
+router.route('/signin')
+.post(signinValidator, signin)
 
 
 
