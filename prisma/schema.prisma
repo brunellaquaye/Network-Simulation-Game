@@ -31,7 +31,7 @@ model User {
 model Scenario {
   id         Int      @id @default(autoincrement())
   name       String
-  difficulty String
+  difficulty String   @default("easy") //easy, medium, hard
   timeLimit  Int
   createdAt  DateTime @default(now())
 
@@ -45,7 +45,7 @@ model Scenario {
 model Device {
   id          Int      @id @default(autoincrement())
   name        String
-  type        String // router, switch, server, pc, firewall,
+  type        String // router, switch, server, load balancer, workstation, firewall, access point
   ipAddress   String?  @unique
   pingRate    Float    @default(10)
   latency     Float    @default(500)

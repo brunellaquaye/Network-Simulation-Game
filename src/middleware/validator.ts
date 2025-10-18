@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction  } from 'express';
 import Joi from 'joi';
 
+// DEVICE VALIDATION
 const deviceSchema = Joi.object({
   id: Joi.forbidden(),
   name: Joi.string().min(3).max(30).required(),
@@ -12,10 +13,24 @@ const deviceSchema = Joi.object({
   status: Joi.string().valid("online", "offline").optional(),
   scenarioId: Joi.number().integer().required()
 })
-
-
 export function deviceValidator ( req:Request, res:Response, next:NextFunction) {
     const {error} = deviceSchema.validate(req.body)
+    if(error) return next(error)
+    next()
+}
+
+
+// SCENARIO VALIDATION
+const scenarioSchema = Joi.object({
+    id: Joi.forbidden(),
+    name: Joi.string().min(3).required(),
+    difficulty: Joi.string().valid('easy','medium','hard'),
+    timeLimit: Joi.number().required(),
+    userId: Joi.number()
+})
+
+export function scenarioValidator ( req:Request, res:Response, next:NextFunction) {
+    const {error} = scenarioSchema.validate(req.body)
     if(error) return next(error);
     next()
 }

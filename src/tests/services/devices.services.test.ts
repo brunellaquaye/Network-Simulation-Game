@@ -5,6 +5,7 @@ jest.mock('../../config/db', () => {
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    findFirst: jest.fn()
   };
   const prismaObj = { device: deviceFns };
 
@@ -77,6 +78,7 @@ describe('Device Services', () => {
     it('should update and return the device details and call prisma.update with correct where/data', async () => {
       const payload = { id: 1, name: 'Updated Device A', type: "router", scenarioId:1};
       const updated = { id: 1, name: 'Updated Device A', type: "router", scenarioId:1};
+      (prisma.device.findFirst as jest.Mock).mockResolvedValue(payload);
       (prisma.device.update as jest.Mock).mockResolvedValue(updated);
 
       const result = await changeDeviceDetails(payload);
@@ -92,6 +94,7 @@ describe('Device Services', () => {
 
   describe('deleteDevice', () => {
     it('should delete and return the deleted device and call prisma.delete with correct where', async () => {
+      (prisma.device.findFirst as jest.Mock).mockResolvedValue(mockSample);
       (prisma.device.delete as jest.Mock).mockResolvedValue(mockSample);
 
       const result = await deleteDevice({ id: 1 });
