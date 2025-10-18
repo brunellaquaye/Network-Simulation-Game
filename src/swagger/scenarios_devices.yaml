@@ -172,7 +172,7 @@ paths:
         - devicestore_auth:
             - write:devices
             - read:devices
-  /users/{userId}/scenarios:
+  /user/{userId}/scenarios:
     get:
       tags:
         - scenario

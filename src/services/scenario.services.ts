@@ -11,10 +11,11 @@ export async function getAllScenarios({ Userid}: {Userid: number}) {
 }
 
 export async function getSpecificScenarios({id: id}: {id: number}) {
-    const results = await prisma.scenario.findMany({
+    const results = await prisma.scenario.findUnique({
             where: { id: id},
             include: {devices: true}
         });
+    if (!results) return null;
     return results;
 }
 

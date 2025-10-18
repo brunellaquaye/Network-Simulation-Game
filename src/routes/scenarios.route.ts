@@ -5,12 +5,13 @@ const router = express.Router();
 
 
 // GET /api/users/:id/scenarios - get all scenarios for a user
-router.get('/users/:id/scenarios',getUserScenarios)
+router.route('/user/:id/scenarios')
+.get(getUserScenarios)
+.post(scenarioValidator,createScenario) 
 
 // CRUD /api/scenario/:id - get, update, delete a scenario by id
 router.route('/scenario/:id')
 .get(getOneScenario)
-.post(scenarioValidator,createScenario) //userId will be passed
 .patch(scenarioValidator,editScenario)
 .delete(removeScenario)
 
