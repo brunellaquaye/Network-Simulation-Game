@@ -1,3 +1,7 @@
+export enum Status{
+    ONLINE = 'online',
+    OFFLINE = 'offline'
+}
 export type Device = {
     id?: number;
     name: string;
@@ -6,15 +10,19 @@ export type Device = {
     pingRate?: number;
     latency?: number;
     trafficLoad?: number;
-    status?: 'online' | 'offline';     // online/offline
+    status?: Status;     // online/offline
     scenarioId: number;
     lastUpdated?: Date;
 }
-
+export enum difficulty{
+    EASY = 'easy',
+    MEDIUM = 'medium',
+    HARD = 'hard'
+}
 export type Scenario = {
     id?: number;
     name: string;
-    difficulty: 'easy'|'medium'|'hard';
+    difficulty: difficulty;
     timeLimit: number;
     createdAt?: Date;
     userId: number
