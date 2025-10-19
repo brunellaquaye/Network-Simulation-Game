@@ -1,6 +1,10 @@
 import prisma from '../config/db';
 import { Device } from '../utils/types';
 
+export async function checkAvailability(id: number){
+   return await prisma.device.findFirst({where: {id}})
+}
+
 export async function getAllDevices() {
     const results = await prisma.device.findMany();
     return results;
@@ -22,8 +26,8 @@ export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,lat
 }
 
 
-export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Device) {
-    const check = await prisma.device.findFirst({where: {id}}); if (!check) return null;
+export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Partial<Device>) {
+    const check = await checkAvailability(id!); if (!check) return null;
     const results = await prisma.device.update({
         where: { id: id }, 
         data: { 
@@ -40,7 +44,7 @@ export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,late
 }
 
 export async function deleteDevice({id}: {id: number} ) {
-    const check = await prisma.device.findFirst({where: {id}}); if (!check) return null;
+    const check = await checkAvailability(id); if (!check) return null;
     const results = await prisma.device.delete({
         where: { id: id } 
     });
