@@ -41,22 +41,26 @@ model Scenario {
   devices      Device[]
   leaderboards Leaderboard[]
 }
-
+enum Status{
+  online
+  offline
+}
 model Device {
   id          Int      @id @default(autoincrement())
   name        String
   type        String // router, switch, server, load balancer, workstation, firewall, access point
-  ipAddress   String?  @unique
+  ipAddress   String?   
   pingRate    Float    @default(10)
-  latency     Float    @default(500)
+  latency     Float    @default(50)
   trafficLoad Float    @default(12)
-  status      String   @default("online") // online/offline
+  status      Status   @default(online) // online/offline
   lastUpdated DateTime @default(now())
 
   scenarioId Int
   scenario   Scenario @relation(fields: [scenarioId], references: [id])
 
   logs Log[]
+   @@unique([scenarioId, ipAddress])
 }
 
 model Log {

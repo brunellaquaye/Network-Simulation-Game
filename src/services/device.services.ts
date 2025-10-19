@@ -22,7 +22,7 @@ export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,lat
 }
 
 
-export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
+export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Device) {
     const check = await prisma.device.findFirst({where: {id}}); if (!check) return null;
     const results = await prisma.device.update({
         where: { id: id }, 
@@ -32,6 +32,7 @@ export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,late
             ipAddress: ipAddress,
             pingRate: pingRate,
             latency: latency,
+            status: status,
             trafficLoad: trafficLoad
          }
     });

@@ -6,7 +6,7 @@ export type Device = {
     id?: number;
     name: string;
     type: string;        // router, switch, server
-    ipAddress?: string;
+    ipAddress?: string | null;
     pingRate?: number;
     latency?: number;
     trafficLoad?: number;
