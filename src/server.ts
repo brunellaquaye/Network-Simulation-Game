@@ -9,8 +9,23 @@ import scenarioRoute from './routes/scenarios.route';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 // Load the Swagger YAML file
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
+const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
+const authenticationSwagger = YAML.load(path.join(__dirname, 'swagger', 'authentication.yaml'));
+
+
+const swaggerDocument = {
+  ...scenariosSwagger,
+  paths: {
+    ...scenariosSwagger.paths,
+    ...authenticationSwagger.paths,
+  },
+  components: {
+    ...scenariosSwagger.components,
+    ...authenticationSwagger.components,
+  },
+};
 
 // middleware to parse JSON requests
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
