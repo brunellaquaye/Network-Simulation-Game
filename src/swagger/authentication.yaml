@@ -1,0 +1,135 @@
+openapi: 3.0.4
+info:
+  title:  Network Simulation Game
+  description: |-
+    A documentation for a network simulation game
+
+    Some useful links:
+    - [The device repository](https://github.com/brunellaquaye/Network-Simulation-Game.git)
+  version: v0.1
+    
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: device
+    description: Everything about devices
+  - name: scenario
+    description: Everyting about scenarios
+paths:
+  /authentication/signup:
+    post:
+      tags:
+        - authentication
+      summary: Register a new user
+      description: Allows a new user to register with email, username, password, and role.
+      operationId: signup
+      requestBody:
+        description: User registration data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSignup'
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+        '400':
+          description: Bad request (e.g., duplicate email or invalid input)
+        '500':
+          description: Internal server error
+
+  /authentication/signin:
+    post:
+      tags:
+        - authentication
+      summary: Log in a user
+      description: Allows a user to log in with email and password.
+      operationId: signin
+      requestBody:
+        description: User login data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSignin'
+      responses:
+        '200':
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                  token:
+                    type: string
+        '400':
+          description: Invalid credentials
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    UserSignup:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - role
+      properties:
+        username:
+          type: string
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        password:
+          type: string
+          format: password
+          example: StrongP@ssw0rd
+        role:
+          type: string
+          enum:
+            - player
+            - admin
+          example: player
+
+    UserSignin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        password:
+          type: string
+          format: password
+          example: StrongP@ssw0rd
