@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 
 interface JwtPayload {
   id: string;
+  role:string;
 }
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {

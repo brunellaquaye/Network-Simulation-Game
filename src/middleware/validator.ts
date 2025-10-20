@@ -56,7 +56,7 @@ export function userValidator (req: Request, res: Response, next: NextFunction){
 const UserSigninSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  role: Joi.string().valid("player", "admin").optional(),
+  role: Joi.string().valid("player", "admin","superAdmin").optional(),
 });
 
 export function signinValidator(req: Request, res: Response, next: NextFunction) {
