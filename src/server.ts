@@ -4,6 +4,9 @@ import authenticationRoutes from './routes/auth.route'
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from 'path';
+import dotenv from "dotenv";
+dotenv.config();
+
 
 import scenarioRoute from './routes/scenarios.route';
 
@@ -22,6 +25,10 @@ app.use('/api/device', deviceRoutes);
 app.use('/api', scenarioRoute)
 
 app.use('/api/authentication', authenticationRoutes);
+
+import routery from "./routes/sample";
+app.use("/api/test", routery);
+
 
 // define a simple route
 app.get("/", (req: Request, res: Response) => {

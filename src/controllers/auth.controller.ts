@@ -37,7 +37,7 @@ export const signin = async(req:Request, res:Response)=>{
 
     // checking if all fields are valid
   
-    // Check if user already exists
+    
     const oldUser = await prisma.user.findFirst({where: {email}})
     if (!oldUser){
         
@@ -48,18 +48,21 @@ export const signin = async(req:Request, res:Response)=>{
         throw Error('Incorrect password or username')
     }
   // Generate token
-    const token = jwt.sign({ id: oldUser.id }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+            { id: oldUser.id ,role: oldUser.role}, 
+        JWT_SECRET, 
+            { expiresIn: "1h" });
 
-    // Set token in an HTTP-only cookie
     res.cookie('token', token, {
-      httpOnly: true, // Prevents JavaScript access
-      secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-      sameSite: 'strict', // Prevents CSRF attacks
-      maxAge: 3600000, // 1 hour in milliseconds
+      httpOnly: true, 
+
+      secure: process.env.NODE_ENV === 'production', 
+      sameSite: 'strict', 
+      maxAge: 3600000, 
     });
 
     // Return user info without the token
-    res.json({
+    res.json({token,
       user: pick(oldUser, ['id', 'username', 'email', 'role']),
     });
 } catch(error:any){
