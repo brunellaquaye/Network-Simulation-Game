@@ -13,8 +13,7 @@ export const getDevices = catchAsync(async (req:Request, res:Response, next:Next
         return res.status(200).json({ message: 'Successful Devices retrieval', data : result });
 })
 export const addDevices = catchAsync(async (req:Request, res:Response, next:NextFunction) => {
-        const {scenarioId,name, type,ipAddress,pingRate,latency,trafficLoad}: Device= req.body
-        const result = await addNewDevice({scenarioId:scenarioId,name:name,type:type,ipAddress:ipAddress,pingRate:pingRate,latency:latency,trafficLoad:trafficLoad});
+        const result = await addNewDevice(req.body);
         
         return res.status(201).json({ message: 'Successfully Created Device', data : result });
 })
