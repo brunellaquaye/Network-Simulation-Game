@@ -4,6 +4,7 @@ import authenticationRoutes from './routes/auth.route'
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from 'path';
+import { globalErrorHandler } from './middleware/errorHandler';
 
 import scenarioRoute from './routes/scenarios.route';
 
@@ -16,6 +17,7 @@ const swaggerDocument = YAML.load(path.join(__dirname, 'swagger', 'scenarios_dev
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(globalErrorHandler)
 
 // ROUTES
 app.use('/api/device', deviceRoutes);
