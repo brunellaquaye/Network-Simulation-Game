@@ -9,10 +9,8 @@ import { userValidator,signinValidator } from '../middleware/validator';
 
 const router = express.Router();
 
-router.route('/signup')
-.post(userValidator,signup)
-router.route('/signin')
-.post(signinValidator, signin)
+router.post('/signup',userValidator,signup)
+router.post('/signin',signinValidator, signin)
 
 
 
