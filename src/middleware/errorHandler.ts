@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../utils/AppError";
 
-export const globalErrorHandler = (err: AppError,req: Request,res: Response,next: NextFunction) => {
+export const globalErrorHandler = (err: any, req: Request,res: Response,next: NextFunction) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.error(err.stack);
+  }
         err.statusCode = err.statusCode || 500;
         err.status = err.status || "error";
       

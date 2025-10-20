@@ -10,16 +10,16 @@ export async function getAllDevices() {
     return results;
 }
 
-export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
+export async function addNewDevice({name, type,ipAddress,pingRate,latency,trafficLoad,scenarioId}: Partial<Device>) {
     const results = await prisma.device.create({
         data: {
-            scenarioId : scenarioId,
-            name: name,
-            type: type,
+            name: name!,
+            type: type!,
             ipAddress: ipAddress,
             pingRate: pingRate,
             latency: latency,
-            trafficLoad: trafficLoad
+            trafficLoad: trafficLoad,
+            scenarioId : scenarioId!
         }
     });
     return results;
