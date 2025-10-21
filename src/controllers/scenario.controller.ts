@@ -5,7 +5,7 @@ import { catchAsync } from '../utils/catchAsync';
 import createHttpError from 'http-errors';
 
 
-export const getUserScenarios = catchAsync(async(req:Request, res:Response, next:NextFunction) =>  {
+export const getUserScenarios = catchAsync(async(req:Request, res:Response) =>  {
  
             const Userid: number = parseInt(req.params.id)
             const result =await getAllScenarios({Userid: Userid});
@@ -15,22 +15,22 @@ export const getUserScenarios = catchAsync(async(req:Request, res:Response, next
 
 }
 )
-export const getOneScenario = catchAsync(async(req:Request, res:Response, next:NextFunction)  => {
+export const getOneScenario = catchAsync(async(req:Request, res:Response)  => {
 
             const id: number = parseInt(req.params.id)
-            const result =await getSpecificScenarios({id: id});
+            const result =await getSpecificScenarios({id});
             if (result === null) throw new createHttpError.NotFound('No scenario found' );
 
             return res.status(200).json({ message: 'Successful Scenarios retrieval', data : result });
 
 }
 )
-export const createScenario = catchAsync(async(req:Request, res:Response, next:NextFunction)  => {
+export const createScenario = catchAsync(async(req:Request, res:Response)  => {
  
         const userId =  parseInt(req.params.id);
         const {name, timeLimit}= req.body
         let difficulty = req.body.difficulty
-        const result = await addNewScenario({ name:name, difficulty:difficulty,timeLimit:timeLimit,userId:userId});
+        const result = await addNewScenario({ name, difficulty, timeLimit, userId});
         
         return res.status(201).json({ message: 'Successfully Created Scenario', data : result });
 
@@ -38,12 +38,11 @@ export const createScenario = catchAsync(async(req:Request, res:Response, next:N
 })
 
 // we can edit scenarios but the user cannot be changed
-export const editScenario = catchAsync(async(req:Request, res:Response, next:NextFunction)  => {
+export const editScenario = catchAsync(async(req:Request, res:Response)  => {
  
         const id = parseInt(req.params.id);
-        const {name, timeLimit, userId}: Scenario= req.body
-        let difficulty = req.body.difficulty 
-        const result =await changeScenarioDetails({id:id, name:name, difficulty:difficulty,timeLimit:timeLimit, userId: userId});
+        const {name, timeLimit, difficulty}: Scenario= req.body
+        const result =await changeScenarioDetails({id, name, timeLimit,difficulty});
         if (result === null) throw new createHttpError.NotFound('No scenario found' );
         
         return res.status(200).json({ message: 'Successfully Changed Scenario Details', data : result });
@@ -51,10 +50,10 @@ export const editScenario = catchAsync(async(req:Request, res:Response, next:Nex
 
 })
 
-export const removeScenario = catchAsync(async(req:Request, res:Response, next:NextFunction)  => {
+export const removeScenario = catchAsync(async(req:Request, res:Response)  => {
    
         const id = parseInt(req.params.id);
-        const result =await deleteScenario({id:id});
+        const result =await deleteScenario({id});
         if (result === null) throw new createHttpError.NotFound('No scenario found' );
         
         return res.status(202).json({ message: 'Successful Scenario Removal', data : result });

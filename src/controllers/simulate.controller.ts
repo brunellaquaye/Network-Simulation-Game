@@ -14,7 +14,7 @@ export const simulateDeviceState = catchAsync(async(req: Request,res: Response) 
           io.emit('updated', result)
         });
     
-        res.json({ status: "Simulating updates..." });
+        res.status(200).json({ status: "Simulating updates..." });
 })
 
 

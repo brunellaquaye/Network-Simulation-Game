@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from 'path';
 import { socketHandler } from './utils/socketHandler';
+import lodash from 'lodash';
 // 
 import deviceRoutes from './routes/device.route';
 import authenticationRoutes from './routes/auth.route'
@@ -25,18 +26,7 @@ export const io = new Server(server,{
 const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
 const authenticationSwagger = YAML.load(path.join(__dirname, 'swagger', 'authentication.yaml'));
 
-
-const swaggerDocument = {
-  ...scenariosSwagger,
-  paths: {
-    ...scenariosSwagger.paths,
-    ...authenticationSwagger.paths,
-  },
-  components: {
-    ...scenariosSwagger.components,
-    ...authenticationSwagger.components,
-  },
-};
+const swaggerDocument = lodash.merge({},scenariosSwagger,authenticationSwagger)
 
 // middleware to parse JSON requests
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
