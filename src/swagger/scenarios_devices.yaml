@@ -10,15 +10,17 @@ info:
     
 servers:
   - url: http://localhost:3000/api
+    description: Local connection
+  - url: https://qtzbtx6k-3000.uks1.devtunnels.ms/api
+    description: Online connection
+
 tags:
   - name: device
     description: Everything about devices
   - name: scenario
-    description: Everyting about scenarios
-  - name: simulate
-    description: Simulate device state
+    description: Everything about scenarios
 paths:
-  /device:
+  /devices:
     get:
       tags: [device]
       summary: Get All existing devices
@@ -29,16 +31,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/device'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/device'
+
         '404' :
           description: No devices found
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/device'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/device'
 
@@ -54,12 +51,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/device'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/device'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/device'
+
         required: true
       responses:
         '200':
@@ -68,9 +60,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/device'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/device'
+
         '400':
           description: Invalid input
         '422':
@@ -85,7 +75,7 @@ paths:
         - devicestore_auth:
             - write:devices
             - read:devices
-  /device/{deviceId}:
+  /devices/{deviceId}:
     patch:
       tags:
         - device
@@ -106,12 +96,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/device'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/device'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/device'
+
         required: true
       responses:
         '200':
@@ -120,9 +105,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/device'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/device'
+
         '400':
           description: Invalid ID supplied
         '404':
@@ -196,9 +179,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/scenario'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/scenario'
+
         '400':
           description: Invalid ID supplied
         '404':
@@ -234,12 +215,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/scenario'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/scenario'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/scenario'
         required: true
       responses:
         '200':
@@ -248,9 +223,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/scenario'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/scenario'
+
         '400':
           description: Invalid input
         '422':
@@ -287,9 +260,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/scenario'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/scenario'
+
         '400':
           description: Invalid ID supplied
         '404':
@@ -325,12 +296,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/scenario'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/scenario'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/scenario'
+
         required: true
       responses:
         '200':
@@ -339,9 +305,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/scenario'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/scenario'
+
         '400':
           description: Invalid ID supplied
         '404':
@@ -393,10 +357,10 @@ paths:
         - scenariostore_auth:
             - write:scenarios
             - read:scenarios
-  /simulate/{scenarioId}:
+  /scenario/{scenarioId}/simulate:
     post:
       tags:
-        - simulate
+        - scenario
       summary: Start a new simulation.
       description: Add a new scenario using admin Id.
       operationId: startSimulation
@@ -414,9 +378,7 @@ paths:
           application/json:
               schema:
                 $ref: '#/components/schemas/simulation_config'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/simulation_config'
+
         required: true
       responses:
         '200':
@@ -425,9 +387,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/scenario'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/scenario'
+
         '400':
           description: Invalid input
         '422':
@@ -501,17 +461,14 @@ components:
           type: string
           example: Universe 1
         difficulty:
-          enum:
-            - online
-            - offline
+          enum: [easy, medium, hard]
         timeLimit:
           type: integer
           example: 2
         userId: 
           type: integer
           example: 1
-      xml:
-        name: scenario
+
     simulation_config:
       type: object
       properties:
@@ -538,8 +495,7 @@ components:
           type: string
         message:
           type: string
-      xml:
-        name: '##default'
+
     Error:
       type: object
       properties:
@@ -558,18 +514,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/device'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/device'
+
     scenario:
       description: scenarios for simulations
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/scenario'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/scenario'
+
     
   securitySchemes:
     devicestore_auth:

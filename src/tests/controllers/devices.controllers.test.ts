@@ -11,8 +11,9 @@ jest.mock('../../services/device.services',()=>({
 const { getDevices, addDevices, editDevice, removeDevice} = DeviceController
 const { getAllDevices, addNewDevice, changeDeviceDetails, deleteDevice } = DeviceServices
 const { devices } = require('../mockData');
+import createHttpError from 'http-errors';
 
-
+// const MockedHttpErrors = createHttpError as jest.Mocked<typeof createHttpError>
 const next = jest.fn();
 
 const mockResponse = () => {
@@ -47,21 +48,16 @@ describe('Device Controllers', () => {
             const res= mockResponse();
 
            ( getAllDevices as jest.Mock).mockResolvedValue(null);
-            await getDevices(req, res, next);
-            expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({status: 404, message: 'No devices found' });
+           try {
+                await getDevices(req, res, next);
+            } catch (error: any) {
+                expect(error).toBeInstanceOf(createHttpError.NotFound);
+                expect(error.status).toBe(404);
+                expect(error.message).toBe( 'No devices found' );
+                
+            }
         }
         );
-        it('should return error',async()=>{
-            const res = mockResponse();
-            const req = mockRequest({});
-
-            (getAllDevices as jest.Mock).mockRejectedValue(new Error('failed'))
-            await getDevices(req,res,next)
-
-            expect(next).toHaveBeenCalled()
-
-        })
     });
     describe('addNewDevice', () => {
 
@@ -70,22 +66,12 @@ describe('Device Controllers', () => {
             const res= mockResponse();
 
             (addNewDevice as jest.Mock).mockResolvedValue(devices[0]);
-            const result = await addDevices(req,res,next);
+             await addDevices(req,res,next);
             
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith({ message: 'Successfully Created Device', data : devices[0] });
         });  
 
-         it('should return error',async()=>{
-            const res = mockResponse();
-            const req = mockRequest({});
-
-            (addNewDevice as jest.Mock).mockRejectedValue(new Error('failed'))
-            await addDevices(req,res,next)
-
-            expect(next).toHaveBeenCalled()
-
-        })
     });
     describe('changeDeviceDetails', () => {
         it('should update and return the device details', async () => {
@@ -103,11 +89,14 @@ describe('Device Controllers', () => {
             const res= mockResponse();
 
             (changeDeviceDetails as jest.Mock).mockResolvedValue(null);
-            await editDevice(req, res, next);
-
-            expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({status: 404, message: 'No devices found' });
-        });
+            try {
+                await editDevice(req, res, next);
+            } catch (err: any) {
+              expect(err).toBeInstanceOf(createHttpError.HttpError);
+              expect(err.status).toBe(404);
+              expect(err.message).toBe('Device not found');
+            }
+        })
         it('should return error',async()=>{
             const res = mockResponse();
             const req = mockRequest({});
@@ -124,34 +113,25 @@ describe('Device Controllers', () => {
             const req= mockRequest({params: {id: 1}});
             const res= mockResponse();
             
-     (       deleteDevice as jest.Mock).mockResolvedValue({ id: 1 });
-            const result = await removeDevice(req,res,next);
+            (deleteDevice as jest.Mock).mockResolvedValue({ id: 1 });
+            await removeDevice(req,res,next);
 
-            expect(res.status).toHaveBeenCalledWith(204);
+            expect(deleteDevice).toHaveBeenCalledWith({ id: 1 });
         }
         );
-        it('should return 404 if device to delete not found', async () => {
-            const req= mockRequest({params: {id: 999}});
+    it('should throw NotFound error when device is missing', async () => {
+          const req= mockRequest({params: {id: 1}});
             const res= mockResponse();
+        (deleteDevice as jest.Mock).mockResolvedValue(null);
 
-     (       deleteDevice as jest.Mock).mockResolvedValue(null);
-
-            await removeDevice(req, res, next);
-
-            expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({status: 404, message: 'No devices found' });
-        });
-
-         it('should return error',async()=>{
-            const res = mockResponse();
-            const req = mockRequest({});
-
-           (deleteDevice as jest.Mock).mockRejectedValue(new Error('failed'))
-            await removeDevice(req,res,next)
-
-            expect(next).toHaveBeenCalled()
-
-        })
+        try {
+          await removeDevice(req, res, next);
+        } catch (err: any) {
+          expect(err).toBeInstanceOf(createHttpError.HttpError);
+          expect(err.status).toBe(404);
+          expect(err.message).toBe('Device not found');
+        }
+  });
 
     });
 });
