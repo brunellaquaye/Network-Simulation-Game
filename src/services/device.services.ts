@@ -10,17 +10,9 @@ export async function getAllDevices(): Promise<Device[]> {
     return results;
 }
 
-export async function addNewDevice({name, type,ipAddress,pingRate,latency,trafficLoad,scenarioId}: Omit<Device, 'id'>): Promise<Device>{
+export async function addNewDevice(data: Omit<Device, 'id'>): Promise<Device>{
     const results = await prisma.device.create({
-        data: {
-            name: name,
-            type: type,
-            ipAddress: ipAddress,
-            pingRate: pingRate,
-            latency: latency,
-            trafficLoad: trafficLoad,
-            scenarioId : scenarioId
-        }
+        data: data
     });
     return results;
 }
