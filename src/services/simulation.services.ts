@@ -1,12 +1,10 @@
-import prisma from "../config/db";
 import { simulateDevice } from "../utils/simulator";
 import { changeDeviceDetails } from "./device.services";
-import { Status } from "../utils/types";
+import { Scenario, Status } from "../utils/types";
 import { getSpecificScenarios } from "./scenario.services";
-import _ from 'lodash';
 
-export async function getScenario({id: id,randomness:random}: {id: number, randomness: object}) {
-    const scenario = await getSpecificScenarios({id: id})
+export async function getScenario({id: id,randomness:random}: {id: number, randomness: object}): Promise<Scenario | null> {
+    const scenario = await getSpecificScenarios({id})
     if (!scenario) return null;
     if (scenario.devices.length === 0) return null;
     for (let device of scenario.devices){

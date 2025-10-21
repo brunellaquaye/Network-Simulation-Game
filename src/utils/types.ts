@@ -1,7 +1,6 @@
-export enum Status{
-    ONLINE = 'online',
-    OFFLINE = 'offline'
-}
+import { difficulty, Status } from "../generated/prisma";
+export { Status }
+
 export type Device = {
     id: number;
     name: string;
@@ -14,11 +13,7 @@ export type Device = {
     scenarioId: number;
     lastUpdated?: Date;
 }
-export enum difficulty{
-    EASY = 'easy',
-    MEDIUM = 'medium',
-    HARD = 'hard'
-}
+
 export type Scenario = {
     id?: number;
     name: string;
