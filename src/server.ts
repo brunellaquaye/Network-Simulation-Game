@@ -10,7 +10,10 @@ import lodash from 'lodash';
 import deviceRoutes from './routes/device.route';
 import authenticationRoutes from './routes/auth.route'
 import scenarioRoute from './routes/scenarios.route';
-import simulator from './routes/simulation.route'
+import simulator from './routes/scenarios.route';
+import createHttpError from 'http-errors';
+import { globalErrorHandler } from './middleware/errorHandler';
+import userRoutes from './routes/user.route'
 
 
 const app = express();
@@ -26,17 +29,17 @@ const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_de
 const authenticationSwagger = YAML.load(path.join(__dirname, 'swagger', 'authentication.yaml'));
 
 
-// const swaggerDocument = {
-//   ...scenariosSwagger,
-//   paths: {
-//     ...scenariosSwagger.paths,
-//     ...authenticationSwagger.paths,
-//   },
-//   components: {
-//     ...scenariosSwagger.components,
-//     ...authenticationSwagger.components,
-//   },
-// };
+const swaggerDocument = {
+  ...scenariosSwagger,
+  paths: {
+    ...scenariosSwagger.paths,
+    ...authenticationSwagger.paths,
+  },
+  components: {
+    ...scenariosSwagger.components,
+    ...authenticationSwagger.components,
+  },
+};
 
 // middleware to parse JSON requests
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
@@ -45,10 +48,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*"}));
 
 // ROUTES
-app.use('/api/devices', deviceRoutes);
-app.use('/api', scenarioRoute)
-app.use('/api/authentication', authenticationRoutes);
+
+  app.use('/api/authentication', authenticationRoutes);
+  app.use('/api', scenarioRoute);
+  app.use('/api/devices', deviceRoutes);
 app.use('/api/simulate',simulator)
+app.use('/api/users', userRoutes)
+
+
+
+// Authorization
+app.use('/api/users', userRoutes)
+
 
 // define a simple route
 app.get("/", (req: Request, res: Response) => {

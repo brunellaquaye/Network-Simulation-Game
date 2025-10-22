@@ -19,7 +19,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     const token = tokenFromCookie || tokenFromHeader;
 
     if (!token) {
-      return res.status(401).json({ error: "Access denied. No token provided." });
+      return res.status(401).json({ error: "Access denied. mmmmNo token provided." });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;

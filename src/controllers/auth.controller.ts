@@ -19,14 +19,16 @@ export const signup = async(req:Request, res:Response)=>{
             username,
             email,
             password:hashSync(password, 10),
-            // role,
+            
         }
     })
 
-     // Generate token
+    //  Generate token
     const expiresIn = 3600;
     const token = jwt.sign(
-            { id: newUser.id }, 
+            { id: newUser.id,
+              role: newUser.role 
+            }, 
         JWT_SECRET, 
             { expiresIn: "1h" });
 
@@ -59,7 +61,7 @@ export const signup = async(req:Request, res:Response)=>{
 
 export const signin = async(req:Request, res:Response)=>{
     try {
-    const {email, password, role} = req.body;
+    const {email, password} = req.body;
     
     const oldUser = await prisma.user.findFirst({where: {email}})
     if (!oldUser){

@@ -1,8 +1,14 @@
 import express from 'express';
 import { scenarioValidator } from '../middleware/validator';
 import { getUserScenarios, getOneScenario, createScenario, editScenario, removeScenario } from '../controllers/scenario.controller';
-const router = express.Router();
 import { simulateDeviceState } from '../controllers/simulate.controller';
+import { authMiddleware } from '../middleware/authMiddleware';
+import { authorizeRoles } from '../middleware/authorizeRole';
+
+
+const router = express.Router();
+
+router.use(authMiddleware, authorizeRoles("admin","superadmin"))
 
 // GET /api/users/:id/scenarios - get all scenarios for a user
 router.route('/user/:id/scenarios')

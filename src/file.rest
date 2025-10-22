@@ -1,0 +1,21 @@
+POST http://localhost:3000/api/authentication/signup
+Content-Type: application/json
+
+{
+    "username" : "123888886",
+    "email":"12883vvvjjj56@gmail.com",
+    "password":"12ddndhfw"
+
+}
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJwbGF5ZXIiLCJpYXQiOjE3NjExNDk5MzIsImV4cCI6MTc2MTE1MzUzMn0.Lajip2NdMdSWsmT0hzMUCIj-Z1g32btyaQinF6CQRvM
+
+POST http://localhost:3000/api/authentication/signup
+Content-Type: application/json
+
+{
+    "username" : "123888886",
+    "email":"12883vvvjjj56@gmail.com",
+    "password":"12ddndhfw"
+
+}
