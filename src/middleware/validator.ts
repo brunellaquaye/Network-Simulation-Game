@@ -15,7 +15,8 @@ const deviceSchema = Joi.object({
 })
 export function deviceValidator ( req:Request, res:Response, next:NextFunction) {
     const {error} = deviceSchema.validate(req.body)
-    if(error) return next(error)
+    if(error) 
+      return res.json({ error: error.details[0].message.replace(/\\/g, '') });
     next()
 }
 
@@ -31,7 +32,8 @@ const scenarioSchema = Joi.object({
 
 export function scenarioValidator ( req:Request, res:Response, next:NextFunction) {
     const {error} = scenarioSchema.validate(req.body)
-    if(error) return next(error);
+    if(error) 
+      return res.json({ error: error.details[0].message.replace(/\\/g, '') })
     next()
 }
 
@@ -41,14 +43,15 @@ const UserSchema = Joi.object({
   id: Joi.forbidden(),
   username: Joi.string().min(3).max(30).optional(),
   email: Joi.string().email().required(),
-  role: Joi.string().valid("player","admin").required(),
+  role: Joi.string().valid("player","admin"),
   password: Joi.string().required()
 })
 
 
 export function userValidator (req: Request, res: Response, next: NextFunction){
   const {error} = UserSchema.validate(req.body)
-  if(error) return next(error);
+  if(error) 
+    return res.json({ error: error.details[0].message.replace(/\\/g, '') })
   next()
 
 }
@@ -61,6 +64,7 @@ const UserSigninSchema = Joi.object({
 
 export function signinValidator(req: Request, res: Response, next: NextFunction) {
   const { error } = UserSigninSchema.validate(req.body);
-  if (error) return next(error);
+  if (error) 
+    return res.json({ error: "Invalid details" });
   next();
 }
