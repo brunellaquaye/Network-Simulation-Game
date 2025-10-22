@@ -2,7 +2,7 @@ import express from 'express';
 import { scenarioValidator } from '../middleware/validator';
 import { getUserScenarios, getOneScenario, createScenario, editScenario, removeScenario } from '../controllers/scenario.controller';
 const router = express.Router();
-
+import { simulateDeviceState } from '../controllers/simulate.controller';
 
 // GET /api/users/:id/scenarios - get all scenarios for a user
 router.route('/user/:id/scenarios')
@@ -14,5 +14,7 @@ router.route('/scenario/:id')
 .get(getOneScenario)
 .patch(scenarioValidator,editScenario)
 .delete(removeScenario)
+
+router.post('/scenario/:id/simulate',simulateDeviceState)
 
 export default router;

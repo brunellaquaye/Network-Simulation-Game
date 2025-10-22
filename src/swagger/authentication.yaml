@@ -1,15 +1,4 @@
-openapi: 3.0.4
-info:
-  title:  Network Simulation Game
-  description: |-
-    A documentation for a network simulation game
 
-    Some useful links:
-    - [The device repository](https://github.com/brunellaquaye/Network-Simulation-Game.git)
-  version: v0.1
-    
-servers:
-  - url: http://localhost:3000/api
 tags:
   - name: device
     description: Everything about devices

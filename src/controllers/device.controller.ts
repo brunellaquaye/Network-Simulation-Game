@@ -1,6 +1,5 @@
 import {Request,Response} from 'express';
 import { changeDeviceDetails, getAllDevices, addNewDevice, deleteDevice } from '../services/device.services';
-import { Device } from '../utils/types';
 import { catchAsync } from '../utils/catchAsync';
 import createHttpError from 'http-errors';
 
@@ -31,7 +30,7 @@ export const editDevice = catchAsync(async (req:Request, res:Response) => {
 export const removeDevice = catchAsync(async (req:Request, res:Response) => {
         const id = parseInt(req.params.id);
         const result = await deleteDevice({id});
-        if (result === null) throw new createHttpError.NotFound('Device not found')
+        if (result === null) throw createHttpError.NotFound('Device not found')
 
         return res.status(204).json({ message: 'Successful Device Removal', data : result });     
 })

@@ -4,6 +4,7 @@ import { createServer } from 'node:http'
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from 'path';
+import cors from 'cors'
 import { socketHandler } from './utils/socketHandler';
 import lodash from 'lodash';
 // 
@@ -12,7 +13,6 @@ import authenticationRoutes from './routes/auth.route'
 import { globalErrorHandler } from './middleware/errorHandler';
 
 import scenarioRoute from './routes/scenarios.route';
-import simulator from './routes/simulation.route'
 import createHttpError from 'http-errors';
 
 
@@ -20,7 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const server = createServer(app)
 export const io = new Server(server,{
-  cors: { origin: "*" }
+  cors: { origin: "*"}
 });
 // Load the Swagger YAML file
 const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
@@ -32,22 +32,22 @@ const swaggerDocument = lodash.merge({},scenariosSwagger,authenticationSwagger)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: "*"}));
 
 // ROUTES
-app.use('/api/device', deviceRoutes);
+app.use('/api/devices', deviceRoutes);
 app.use('/api', scenarioRoute)
 app.use('/api/authentication', authenticationRoutes);
-app.use('/api/simulate',simulator)
-
-// if this handles wrong routing gracefully
-app.use((req: Request, res: Response, next:NextFunction) => next(createHttpError(404, `Can't find ${req.originalUrl} on this server`)));
-app.use(globalErrorHandler)
 
 
 // define a simple route
 app.get("/", (req: Request, res: Response) => {
-    res.json({message: "Hello, World!"});
+  res.json({message: "Hello, World!"});
 });
+
+// if this handles wrong routing gracefully
+app.use((req: Request, res: Response, next:NextFunction) => next(createHttpError(404, `Can't find ${req.originalUrl} on this server`)));
+app.use(globalErrorHandler)
 io.on("connection", (socket) => socketHandler(io, socket));
 
 
