@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET! ;
 
 export const signup = async(req:Request, res:Response)=>{
     try {
-    const {email, password, username, role} = req.body;
+    const {email, password, username} = req.body;
 
     const oldUser = await prisma.user.findFirst({where: {email}})
     if (oldUser){
@@ -19,24 +19,47 @@ export const signup = async(req:Request, res:Response)=>{
             username,
             email,
             password:hashSync(password, 10),
-            role,
+            // role,
         }
     })
 
-    return res.status(201).json(pick(newUser,['id','username','email','role'])
-    );
+     // Generate token
+    const expiresIn = 3600;
+    const token = jwt.sign(
+            { id: newUser.id }, 
+        JWT_SECRET, 
+            { expiresIn: "1h" });
+
+    res.cookie('token', token, {
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 3600000, 
+    });
+
+    // Return user info with
+    return res.status(201).json({
+        token,
+        expiresIn,
+        user: pick(newUser, ['id', 'username', 'email','role']),
+    });
+
+
 
 } catch(error:any){
     return res.status(500).json({ error: "An unexpected error occurred." });
 }}
 
 
+
+
+
+
+
+
 export const signin = async(req:Request, res:Response)=>{
     try {
     const {email, password, role} = req.body;
-
-    // checking if all fields are valid
-  
     
     const oldUser = await prisma.user.findFirst({where: {email}})
     if (!oldUser){
@@ -45,9 +68,13 @@ export const signin = async(req:Request, res:Response)=>{
     }
     
     if(!compareSync(password, oldUser.password)){
-        throw Error('Incorrect password or username')
+        // throw createHttpError.Error('Incorrect password or username')
+        return res.status(400).json({ error: 'Incorrect password or username' });
+
+        // Error('Incorrect password or username')
     }
   // Generate token
+    const expiresIn = 3600;
     const token = jwt.sign(
             { id: oldUser.id ,role: oldUser.role}, 
         JWT_SECRET, 
@@ -55,17 +82,23 @@ export const signin = async(req:Request, res:Response)=>{
 
     res.cookie('token', token, {
       httpOnly: true, 
-
-      secure: process.env.NODE_ENV === 'production', 
-      sameSite: 'strict', 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
       maxAge: 3600000, 
     });
 
     // Return user info without the token
-    res.json({token,
-      user: pick(oldUser, ['id', 'username', 'email', 'role']),
+    res.json({
+        token,
+        expiresIn,
+        user: pick(oldUser, ['id', 'username', 'email', 'role']),
     });
+
+
 } catch(error:any){
     console.error(error);
     return res.status(500).json({ error: "An unexpected error occurred." });
 }}
+
+
+
