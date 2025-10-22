@@ -12,7 +12,7 @@ servers:
   - url: http://localhost:3000/api
     description: Local connection
   - url: https://qtzbtx6k-3000.uks1.devtunnels.ms/api
-    description: Online connection
+    description: Kwabena's connection
 
 tags:
   - name: device
@@ -157,7 +157,7 @@ paths:
         - devicestore_auth:
             - write:devices
             - read:devices
-  /users/{userId}/scenarios:
+  /user/{userId}/scenarios:
     get:
       tags:
         - scenario
@@ -172,6 +172,13 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: addDevices
+          in: query
+          description: enable querying with devices or not
+          schema: 
+            type: string
+            enum: ["true", "false"]
+            description: pass as a string
       responses:
         '200':
           description: successful operation
@@ -238,12 +245,42 @@ paths:
         - scenariostore_auth:
             - write:scenarios
             - read:scenarios
+  /scenarios:
+    get:
+      tags:
+        - scenario
+      summary: Find All scenarios.
+      description: Returns all scenarios.
+      operationId: getallScenarios
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/scenario'
+
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: device not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+        - devicestore_auth:
+            - write:devices
+            - read:devices
   /scenario/{scenarioId}:
     get:
       tags:
         - scenario
       summary: Find scenario by ID.
-      description: Returns a scenario.
+      description: Returns a scenario with its devices and logs.
       operationId: getScenarioById
       parameters:
         - name: scenarioId
@@ -253,6 +290,13 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: addDevices
+          in: query
+          description: enable querying with devices or not
+          schema: 
+            type: string
+            enum: ["true", "false"]
+            description: pass as a string
       responses:
         '200':
           description: successful operation
@@ -406,16 +450,9 @@ paths:
 components:
   schemas:
     device:
-      required:
-        - name
-        - type
-        - userId
+      required: [name,type,userId]
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
         name:
           type: string
           example: WestWing Router
@@ -438,9 +475,7 @@ components:
           description: 100ms
           example: 
         status:
-          enum:
-            - online
-            - offline
+          enum: [online,offline]
           example: online
         userId: 
           type: integer
@@ -448,15 +483,9 @@ components:
       xml:
         name: device
     scenario:
-      required:
-        - name
-        - userId
+      required: [name,userId]
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
         name:
           type: string
           example: Universe 1

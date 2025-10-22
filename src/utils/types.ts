@@ -24,9 +24,9 @@ export type Scenario = {
 };
 
 export type Logs = {
-  id: number;
+  id?: number;
   deviceId: number;
-  timestamp: Date;
+  timestamp?: Date;
   eventType: string; //failure, recovery
   message: string;
 };

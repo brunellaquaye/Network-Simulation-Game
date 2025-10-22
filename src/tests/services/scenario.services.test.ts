@@ -19,7 +19,7 @@ jest.mock('../../config/db', () => {
 
 import prisma from "../../config/db";
 import { difficulty } from "../../generated/prisma";
-import { addNewScenario, changeScenarioDetails, deleteScenario, getAllScenarios, getSpecificScenarios } from "../../services/scenario.services";
+import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenarios } from "../../services/scenario.services";
 import { scenario } from "../mockData";
 
 
@@ -28,7 +28,7 @@ describe('All Scenario Services', ()=> {
   describe('Getting all Scenarios', ()=>{
     it('should return all available scenarios',async()=>{
       (prisma.scenario.findMany as jest.Mock).mockResolvedValue(scenario[1])
-      const result = await getAllScenarios({Userid: scenario[1].userId})
+      const result = await getAllUserScenarios({Userid: scenario[1].userId})
       expect(result).toBe(scenario[1])
       expect(prisma.scenario.findMany).toHaveBeenCalledTimes(1);
     })

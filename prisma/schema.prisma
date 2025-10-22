@@ -41,7 +41,7 @@ model Scenario {
   createdAt  DateTime @default(now())
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   devices      Device[]
   leaderboards Leaderboard[]
@@ -63,7 +63,7 @@ model Device {
   lastUpdated DateTime @default(now())
 
   scenarioId Int
-  scenario   Scenario @relation(fields: [scenarioId], references: [id])
+  scenario   Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
 
   logs Log[]
    @@unique([scenarioId, ipAddress])
@@ -72,7 +72,7 @@ model Device {
 model Log {
   id        Int      @id @default(autoincrement())
   deviceId  Int
-  device    Device   @relation(fields: [deviceId], references: [id])
+  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
   timestamp DateTime @default(now())
   eventType String
   message   String

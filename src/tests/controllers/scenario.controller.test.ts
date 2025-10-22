@@ -10,7 +10,7 @@ jest.mock('../../services/scenario.services', ()=>({
 }))
 
 import { createScenario, editScenario, getOneScenario, getUserScenarios, removeScenario } from "../../controllers/scenario.controller";
-import { addNewScenario, changeScenarioDetails, deleteScenario, getAllScenarios, getSpecificScenarios } from "../../services/scenario.services";
+import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenarios } from "../../services/scenario.services";
 import createHttpError from 'http-errors';
 import { scenario } from "../mockData";
 
@@ -35,14 +35,14 @@ describe('Testing all scenario Controllers', ()=>{
         const res = mockResponse();
         it('should return all scenarios', async()=>{
 
-            (getAllScenarios as jest.Mock).mockResolvedValue(scenario);
+            (getAllUserScenarios as jest.Mock).mockResolvedValue(scenario);
             await getUserScenarios(req,res,next);
 
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: 'Successful Scenarios retrieval', data : scenario });
         })
         it('should hit a notfound error', async()=>{
-            (getAllScenarios as jest.Mock).mockResolvedValue([]);
+            (getAllUserScenarios as jest.Mock).mockResolvedValue([]);
             try {
                 await getUserScenarios(req,res,next);
             } catch (error: any) {

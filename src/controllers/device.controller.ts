@@ -36,7 +36,7 @@ export const editDevice = catchAsync(async (req:Request, res:Response) => {
 
 
 })
-
+// todo: device removal should also remove logs
 export const removeDevice = catchAsync(async (req:Request, res:Response) => {
         const id = parseInt(req.params.id);
         const result = await deleteDevice({id});
