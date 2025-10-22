@@ -19,7 +19,7 @@ export const getOneScenario = catchAsync(async(req:Request, res:Response)  => {
 
             const id: number = parseInt(req.params.id)
             const result =await getSpecificScenarios({id});
-            if (result === null) throw new createHttpError.NotFound('No scenario found' );
+            if (result === null) throw new createHttpError.NotFound('No scenario found');
 
             return res.status(200).json({ message: 'Successful Scenarios retrieval', data : result });
 
@@ -28,8 +28,7 @@ export const getOneScenario = catchAsync(async(req:Request, res:Response)  => {
 export const createScenario = catchAsync(async(req:Request, res:Response)  => {
  
         const userId =  parseInt(req.params.id);
-        const {name, timeLimit}= req.body
-        let difficulty = req.body.difficulty
+        const {name, timeLimit, difficulty}= req.body
         const result = await addNewScenario({ name, difficulty, timeLimit, userId});
         
         return res.status(201).json({ message: 'Successfully Created Scenario', data : result });

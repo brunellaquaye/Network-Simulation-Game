@@ -13,7 +13,6 @@ const { getAllDevices, addNewDevice, changeDeviceDetails, deleteDevice } = Devic
 const { devices } = require('../mockData');
 import createHttpError from 'http-errors';
 
-// const MockedHttpErrors = createHttpError as jest.Mocked<typeof createHttpError>
 const next = jest.fn();
 
 const mockResponse = () => {
@@ -38,7 +37,7 @@ describe('Device Controllers', () => {
             const res= mockResponse();
 
             (getAllDevices as jest.Mock).mockResolvedValue(devices);
-            const result = await getDevices(req,res,next);
+            await getDevices(req,res,next);
 
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: 'Successful Devices retrieval', data : devices });
@@ -79,7 +78,7 @@ describe('Device Controllers', () => {
             const res= mockResponse();
 
             (changeDeviceDetails as jest.Mock).mockResolvedValue(devices[0]);
-            const result = await editDevice(req,res,next);
+            await editDevice(req,res,next);
 
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: 'Successfully Changed Device Details', data : devices[0] });
