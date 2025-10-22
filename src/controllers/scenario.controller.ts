@@ -1,75 +1,60 @@
 import {Request,Response,NextFunction} from 'express';
 import { getAllScenarios , getSpecificScenarios, addNewScenario, changeScenarioDetails, deleteScenario,  } from '../services/scenario.services';
 import { Scenario } from '../generated/prisma';
+import { catchAsync } from '../utils/catchAsync';
+import createHttpError from 'http-errors';
 
 
-export async function getUserScenarios(req:Request, res:Response, next:NextFunction) {
-    try {
+export const getUserScenarios = catchAsync(async(req:Request, res:Response) =>  {
+ 
             const Userid: number = parseInt(req.params.id)
             const result =await getAllScenarios({Userid: Userid});
-            if (result.length === 0)  return res.status(404).json({status: 404, message: 'No scenario found' });
+            if (result.length === 0)  throw new createHttpError.NotFound('No scenario found' );
 
             return res.status(200).json({ message: 'Successful Scenarios retrieval', data : result });
 
-    } catch (error) {
-        next(error);
-    }
 }
+)
+export const getOneScenario = catchAsync(async(req:Request, res:Response)  => {
 
-export async function getOneScenario(req:Request, res:Response, next:NextFunction) {
-    try {
             const id: number = parseInt(req.params.id)
-            const result =await getSpecificScenarios({id: id});
-            if (result === null) return res.status(404).json({status: 404, message: 'No scenario found' });
+            const result =await getSpecificScenarios({id});
+            if (result === null) throw new createHttpError.NotFound('No scenario found');
 
             return res.status(200).json({ message: 'Successful Scenarios retrieval', data : result });
-    } catch (error) {
-        next(error);
-    }
 
 }
-
-export async function createScenario(req:Request, res:Response, next:NextFunction) {
-     try {
+)
+export const createScenario = catchAsync(async(req:Request, res:Response)  => {
+ 
         const userId =  parseInt(req.params.id);
-        const {name, timeLimit}= req.body
-        let difficulty = req.body.difficulty
-        const result = await addNewScenario({ name:name, difficulty:difficulty,timeLimit:timeLimit,userId:userId});
+        const {name, timeLimit, difficulty}= req.body
+        const result = await addNewScenario({ name, difficulty, timeLimit, userId});
         
         return res.status(201).json({ message: 'Successfully Created Scenario', data : result });
-        
-    } catch (error) {
-        next(error);   
-    }
 
-}
+
+})
 
 // we can edit scenarios but the user cannot be changed
-export async function editScenario(req:Request, res:Response, next:NextFunction) {
-     try {
+export const editScenario = catchAsync(async(req:Request, res:Response)  => {
+ 
         const id = parseInt(req.params.id);
-        const {name, timeLimit, userId}: Scenario= req.body
-        let difficulty = req.body.difficulty 
-        const result =await changeScenarioDetails({id:id, name:name, difficulty:difficulty,timeLimit:timeLimit, userId: userId});
-        if (result === null) return res.status(404).json({status: 404, message: 'No Scenario found' });
+        const {name, timeLimit, difficulty}: Scenario= req.body
+        const result =await changeScenarioDetails({id, name, timeLimit,difficulty});
+        if (result === null) throw new createHttpError.NotFound('No scenario found' );
         
         return res.status(200).json({ message: 'Successfully Changed Scenario Details', data : result });
         
-    } catch (error) {
-        next(error);   
-    }
 
-}
+})
 
-export async function removeScenario(req:Request, res:Response, next:NextFunction) {
-     try {
+export const removeScenario = catchAsync(async(req:Request, res:Response)  => {
+   
         const id = parseInt(req.params.id);
-        const result =await deleteScenario({id:id});
-        if (result === null) return res.status(404).json({status: 404, message: 'No scenario found' });
+        const result =await deleteScenario({id});
+        if (result === null) throw new createHttpError.NotFound('No scenario found' );
         
         return res.status(202).json({ message: 'Successful Scenario Removal', data : result });
-        
-    } catch (error) {
-        next(error); 
-    }
-}
+
+})

@@ -5,28 +5,20 @@ export async function checkAvailability(id: number){
    return await prisma.device.findFirst({where: {id}})
 }
 
-export async function getAllDevices() {
+export async function getAllDevices(): Promise<Device[]> {
     const results = await prisma.device.findMany();
     return results;
 }
 
-export async function addNewDevice({scenarioId,name, type,ipAddress,pingRate,latency,trafficLoad}: Device) {
+export async function addNewDevice(data: Omit<Device, 'id'>): Promise<Device>{
     const results = await prisma.device.create({
-        data: {
-            scenarioId : scenarioId,
-            name: name,
-            type: type,
-            ipAddress: ipAddress,
-            pingRate: pingRate,
-            latency: latency,
-            trafficLoad: trafficLoad
-        }
+        data: data
     });
     return results;
 }
 
 
-export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Partial<Device>) {
+export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Partial<Device>): Promise<Device | null> {
     const check = await checkAvailability(id!); if (!check) return null;
     const results = await prisma.device.update({
         where: { id: id }, 
@@ -43,7 +35,7 @@ export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,late
     return results;
 }
 
-export async function deleteDevice({id}: {id: number} ) {
+export async function deleteDevice({id}: {id: number} ): Promise<Device | null> {
     const check = await checkAvailability(id); if (!check) return null;
     const results = await prisma.device.delete({
         where: { id: id } 

@@ -1,7 +1,7 @@
 import prisma from '../config/db';
-import { Scenario } from '../utils/types';
+import { Device, Scenario } from '../utils/types';
 
-export async function getAllScenarios({ Userid}: {Userid: number}) {
+export async function getAllScenarios({ Userid}: {Userid: number}): Promise<Scenario[]> {
     const results = await prisma.scenario.findMany({
             where: {
                 userId: Userid
@@ -10,7 +10,7 @@ export async function getAllScenarios({ Userid}: {Userid: number}) {
     return results;
 }
 
-export async function getSpecificScenarios({id: id}: {id: number}) {
+export async function getSpecificScenarios({id: id}: {id: number}): Promise<Scenario & {devices: Device[]} | null> {
     const results = await prisma.scenario.findUnique({
             where: { id: id},
             include: {devices: true}
@@ -20,7 +20,7 @@ export async function getSpecificScenarios({id: id}: {id: number}) {
 }
 
 
-export async function addNewScenario({userId,name,difficulty,timeLimit}: Scenario) {
+export async function addNewScenario({userId,name,difficulty,timeLimit}: Scenario): Promise<Scenario> {
          const results = await prisma.scenario.create({
         data: { 
             name: name,
@@ -32,7 +32,7 @@ export async function addNewScenario({userId,name,difficulty,timeLimit}: Scenari
         return results;
 }
 
-export async function changeScenarioDetails({id,name,difficulty,timeLimit, userId}: Scenario) {
+export async function changeScenarioDetails({id,name,difficulty,timeLimit}: Omit<Scenario, 'userId'>): Promise<Scenario | null> {
 const check = await prisma.scenario.findFirst({where: {id}}); if (!check) return null;
     const results = await prisma.scenario.update({
         where: { id: id }, 
@@ -45,7 +45,7 @@ const check = await prisma.scenario.findFirst({where: {id}}); if (!check) return
     return results;
 }
 
-export async function deleteScenario({id: id}: {id: number}) {
+export async function deleteScenario({id: id}: {id: number}): Promise<Scenario | null> {
     const check = await prisma.scenario.findFirst({where: {id}}); if (!check) return null;
     const results = await prisma.scenario.delete({
         where: { id: id } 

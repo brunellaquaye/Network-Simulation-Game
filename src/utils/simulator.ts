@@ -1,4 +1,4 @@
-import { Device, Status } from "./types";
+import { Device, Status} from "./types";
 
 export const simulateDevice = ({
   device,
@@ -34,16 +34,16 @@ export const simulateDevice = ({
   new_latency = Math.min(Max_latency, Math.max(Min_latency, new_latency));
 
   // Smarter status logic
-  let new_status = Status.ONLINE;
+  let new_status: Status = Status.online;
   if (new_latency >= Max_latency - 15) {
-    if (status === Status.OFFLINE || Math.random() < 0.8) {
-      new_status = Status.OFFLINE;
+    if (status === Status.offline || Math.random() < 0.8) {
+      new_status = Status.offline;
     }
   }
 
   // Adjust traffic load
   const new_trafficLoad =
-    new_status === Status.OFFLINE
+    new_status === Status.offline
       ? 0
       : Math.max(0, trafficLoad + (Math.random() * 10 - 5));
 

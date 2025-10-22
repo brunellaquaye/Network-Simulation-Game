@@ -28,10 +28,15 @@ model User {
   leaderboards Leaderboard[]
 }
 
+enum difficulty{
+  easy
+  medium
+  hard
+}
 model Scenario {
   id         Int      @id @default(autoincrement())
   name       String
-  difficulty String   @default("easy") //easy, medium, hard
+  difficulty difficulty   @default(easy) //easy, medium, hard
   timeLimit  Int
   createdAt  DateTime @default(now())
 
