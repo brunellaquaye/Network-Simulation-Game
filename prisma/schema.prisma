@@ -50,6 +50,7 @@ enum Status{
   online
   offline
 }
+// add position x and y for each device
 model Device {
   id          Int      @id @default(autoincrement())
   name        String
