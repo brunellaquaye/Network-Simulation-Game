@@ -1,21 +1,26 @@
 import { Request, Response } from "express";
-import { getScenario } from "../services/simulation.services";
-import { io } from "../server";
 import { catchAsync } from "../utils/catchAsync";
-import createHttpError from "http-errors";
+import { startSimulationLoop, stopSimulationLoop, isSimulationRunning } from "../services/simulation.manager.services";
 
-export const simulateDeviceState = catchAsync(async(req: Request,res: Response) => {
- 
-        const id = parseInt(req.params.id);
-        const result = await getScenario({id:id,randomness:req.body})
-        if (result === null) throw new createHttpError.NotFound('Simulation has no devices');
-        
-        io.on("deviceUpdate",()=>{
-          io.emit('updated', result)
-        });
-    
-        res.status(200).json({ status: "Simulating updates..." });
-})
+export const simulateDeviceState = catchAsync(async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  const { start, randomness } = req.body;
 
+  if (start === true) {
+    if (isSimulationRunning(id)) {
+      return res.status(400).json({ message: "Simulation already running." });
+    }
+    startSimulationLoop(id, randomness);
+    return res.status(200).json({ message: `Simulation ${id} started.` });
+  }
 
+  if (start === false) {
+    if (!isSimulationRunning(id)) {
+      return res.status(400).json({ message: "No simulation running for this scenario." });
+    }
+    stopSimulationLoop(id);
+    return res.status(200).json({ message: `Simulation ${id} stopped.` });
+  }
 
+  return res.status(400).json({ message: "Invalid request: 'start' must be true or false." });
+});

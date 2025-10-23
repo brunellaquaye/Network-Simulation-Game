@@ -16,6 +16,8 @@ router.route('/scenario/:id')
 .delete(removeScenario)
 
 router.get('/scenarios',getAllScenario)
+
 router.post('/scenario/:id/simulate',simulateDeviceState)
+
 
 export default router;
