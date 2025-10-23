@@ -1,0 +1,55 @@
+POST http://localhost:3000/api/authentication/signup
+Content-Type: application/json
+
+{
+    "username" : "working1",
+    "email":"working1@gmail.com",
+    "password":"1234"
+
+}
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzYsInJvbGUiOiJwbGF5ZXIiLCJpYXQiOjE3NjExNDk5MzIsImV4cCI6MTc2MTE1MzUzMn0.Lajip2NdMdSWsmT0hzMUCIj-Z1g32btyaQinF6CQRvM
+###
+POST http://localhost:3000/api/authentication/signin
+Content-Type: application/json
+
+{
+    
+    "email":"working1@gmail.com",
+    "password":"1234"
+
+}
+
+# create new device
+###
+POST http://localhost:3000/api/devices
+Content-Type: application/json
+
+{
+  "name": "Device A",
+  "type": "server",
+  "scenarioId": 6
+}
+
+
+
+
+
+###
+# create scenario
+POST http://localhost:3000/api/users/42/scenarios
+Content-Type: application/json
+
+{
+    "name":"working42scenrio",
+    "difficulty":"easy",
+    "timeLimit":20
+}
+
+
+###
+GET http://localhost:3000/api/users/42/scenarios
+
+Content-Type: application/json
+
+

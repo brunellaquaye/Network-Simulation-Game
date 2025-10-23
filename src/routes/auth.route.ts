@@ -1,11 +1,9 @@
 
-// routes for authentication
+// routes for authentication and authentication
 import express from 'express'
 
 import {signup,signin} from '../controllers/auth.controller'
 import { userValidator,signinValidator } from '../middleware/validator';
-
-
 
 const router = express.Router();
 
