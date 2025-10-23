@@ -4,21 +4,21 @@ import { createServer } from 'node:http'
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from 'path';
+import dotenv from "dotenv";
+dotenv.config();
 import cors from 'cors'
 import { socketHandler } from './utils/socketHandler';
 import lodash from 'lodash';
 import deviceRoutes from './routes/device.route';
 import authenticationRoutes from './routes/auth.route'
+import { globalErrorHandler } from './middleware/errorHandler';
 import scenarioRoute from './routes/scenarios.route';
 import simulator from './routes/scenarios.route';
 import createHttpError from 'http-errors';
-import { globalErrorHandler } from './middleware/errorHandler';
 import userRoutes from './routes/user.route'
-
 
 const app = express();
 app.use(cors())
-
 const PORT = process.env.PORT || 3000;
 const server = createServer(app)
 export const io = new Server(server,{
@@ -27,34 +27,26 @@ export const io = new Server(server,{
 // Load the Swagger YAML file
 const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
 const authenticationSwagger = YAML.load(path.join(__dirname, 'swagger', 'authentication.yaml'));
+const swaggerDocument = lodash.merge({},scenariosSwagger,authenticationSwagger)
 
-
-const swaggerDocument = {
-  ...scenariosSwagger,
-  paths: {
-    ...scenariosSwagger.paths,
-    ...authenticationSwagger.paths,
-  },
-  components: {
-    ...scenariosSwagger.components,
-    ...authenticationSwagger.components,
-  },
-};
 
 // middleware to parse JSON requests
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*"}));
-
 // ROUTES
 
-  app.use('/api/authentication', authenticationRoutes);
-  app.use('/api', scenarioRoute);
-  app.use('/api/devices', deviceRoutes);
+
+
+app.use('/api', scenarioRoute)
+app.use('/api/devices', deviceRoutes);
 app.use('/api/simulate',simulator)
+app.use('/api/authentication', authenticationRoutes); 
 app.use('/api/users', userRoutes)
 
+import routery from "./routes/sample";
+app.use("/api/test", routery);
 
 
 // Authorization
@@ -65,6 +57,7 @@ app.use('/api/users', userRoutes)
 app.get("/", (req: Request, res: Response) => {
   res.json({message: "Hello, World!"});
 });
+
 
 // if this handles wrong routing gracefully
 app.use((req: Request, res: Response, next:NextFunction) => next(createHttpError(404, `Can't find ${req.originalUrl} on this server`)));

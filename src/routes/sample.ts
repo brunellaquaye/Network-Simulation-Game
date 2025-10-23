@@ -15,7 +15,7 @@ routery.get("/admin", authMiddleware, authorizeRoles("admin", "superAdmin"), (re
 });
 
 // SuperAdmin only
-routery.get("/super", authMiddleware, authorizeRoles("SuperAdmin"), (req, res) => {
+routery.get("/super", authMiddleware, authorizeRoles("superadmin"), (req, res) => {
   res.json({ message: "Welcome SuperAdmin!" });
 });
 
