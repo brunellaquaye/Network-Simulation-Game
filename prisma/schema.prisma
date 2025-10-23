@@ -118,6 +118,6 @@ model State {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   data      Json
-  version   Int
+  version   Float   @default(0.01)
   createdAt DateTime @default(now())
 }
