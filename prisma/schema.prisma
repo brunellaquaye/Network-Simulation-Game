@@ -71,13 +71,25 @@ model Device {
   // Canvas Position as JSON
   position      Json?         // { "x": 250.5, "y": 180.3 }
 
-  // Relations
-  connections   Device[]      @relation("DeviceConnections")
-  connectedTo   Device[]      @relation("DeviceConnections")
+  outgoing DeviceConnection[] @relation("from")
+  incoming DeviceConnection[] @relation("to")
 
   createdById   Int?
   // createdBy     User?         @relation(fields: [createdById], references: [id])
 }
+
+model DeviceConnection {
+  id Int @id @default(autoincrement())
+  fromId Int
+  toId Int
+  createdAt DateTime @default(now())
+
+  from Device @relation("from", fields: [fromId], references: [id], onDelete: Cascade)
+  to Device @relation("to", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@unique([fromId, toId])
+}
+
 
 model Log {
   id        Int      @id @default(autoincrement())
