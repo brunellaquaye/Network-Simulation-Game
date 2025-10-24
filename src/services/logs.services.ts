@@ -55,17 +55,15 @@ export const getScenarioLogs = async(scenarioId: number) => {
     return results;
 }
 export const getUserScenarioSessionLogs = async(scenarioId: number, userId: number) => {
-    const results = 
-    
-    await prisma.log.findMany({
-         where: {
-           device: {
-            AND: [
-          { scenarioId: scenarioId },
-          { createdById: userId }
-                ]
-         }
-        }
+    const results = await prisma.log.findMany({
+           where: {
+             device: {
+              AND: [
+            { scenarioId: scenarioId },
+            { createdById: userId }
+                  ]
+           }
+          }
 });
 
     return results;
