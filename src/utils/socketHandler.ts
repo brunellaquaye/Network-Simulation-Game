@@ -1,15 +1,15 @@
 import type { Server, Socket } from "socket.io";
-import { log } from "./logger";
+import { logger } from "./logger";
 
 export function socketHandler(io: Server, socket: Socket) {
-  log(`New connection: ${socket.id}`);
+  logger(`New connection: ${socket.id}`);
   // we want to be sending messages to only specific simulation sections
-  socket.on('JoinRoom',(userId) =>{
-    socket.join(userId)
-    log(`User: ${userId} joined room`)
-  })
+  socket.on("JoinRoom", (userId) => {
+    socket.join(userId);
+    logger(`User: ${userId} joined room`);
+  });
 
   socket.on("disconnect", () => {
-    log(`Disconnected: ${socket.id}`);
+    logger(`Disconnected: ${socket.id}`);
   });
 }
