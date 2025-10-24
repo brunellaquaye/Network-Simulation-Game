@@ -3,15 +3,14 @@ import { changeDeviceDetails } from "./device.services";
 import { Device, Logs, Scenario, Status } from "../utils/types";
 import { getSpecificScenarios } from "./scenario.services";
 import { createDeviceLog } from "./logs.services";
+import { io } from "../server";
 
 export async function runScenarioSimulation({
   id,
   randomness,
-  io,
 }: {
   id: number;
   randomness: object;
-  io?: any;
 }): Promise<(Scenario & { devices: Device[] }) | null> {
   const scenario = (await getSpecificScenarios({ id, addDevices: "true" })) as
     | (Scenario & { devices: Device[] })
@@ -49,13 +48,15 @@ export async function runScenarioSimulation({
     ...logsToCreate.map(createDeviceLog),
   ]);
 
-  if (io) {
+  
+    // io.to(userId).emit("deviceUpdate", { //emit to specific rooms
     io.emit("deviceUpdate", {
       scenarioId: id,
       updatedDevices,
+      logsToCreate,
       timestamp: new Date(),
     });
-  }
+ 
 
   return { ...scenario, devices: updatedDevices };
 }

@@ -23,6 +23,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  devices Device[]
   scenarios    Scenario[]
   states       State[]
   leaderboards Leaderboard[]
@@ -75,7 +76,7 @@ model Device {
   incoming DeviceConnection[] @relation("to")
 
   createdById   Int?
-  // createdBy     User?         @relation(fields: [createdById], references: [id])
+  createdBy     User?         @relation(fields: [createdById], references: [id])
 }
 
 model DeviceConnection {
