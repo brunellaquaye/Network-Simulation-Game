@@ -1,5 +1,5 @@
 import prisma from '../config/db';
-import { Device } from '../utils/types';
+import { Device, Logs } from '../utils/types';
 
 export async function checkAvailability(id: number){
    return await prisma.device.findFirst({where: {id}})
@@ -8,7 +8,12 @@ export async function checkAvailability(id: number){
 export async function getAllDevices(): Promise<Device[]> {
     const results = await prisma.device.findMany();
     return results;
-}
+}                                           
+// export async function  getDeviceLogs(id: number): Promise<Device & {Logs: Logs[]} | null> {
+//     const check = await checkAvailability(id!); if (!check) return null;
+//     const results = await prisma.device.findMany({where: {id: id},include: {logs:true}});
+//     return results;
+// }
 
 export async function addNewDevice(data: Omit<Device, 'id'>): Promise<Device>{
     const results = await prisma.device.create({
