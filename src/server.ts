@@ -52,4 +52,4 @@ io.on("connection", (socket) => socketHandler(io, socket));
 
 
 // start server
-server.listen(PORT, () => console.log(`Server started on port: ${PORT}`))
+server.listen(PORT, () => console.log(`Server started on port: ${PORT} in ${process.env.NODE_ENV} env`))

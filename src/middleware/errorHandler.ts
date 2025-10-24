@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import { log } from "../utils/logger";
 
 export const globalErrorHandler = (err: any, req: Request,res: Response,next: NextFunction) => {
   if (process.env.NODE_ENV === 'development') {
-    console.error(err.stack);
+    log(err.stack);
   }
         err.statusCode = err.statusCode || 500;
         err.status = err.status || "error";

@@ -1,4 +1,5 @@
 import prisma from '../config/db';
+import { Role } from '../generated/prisma';
 import { Logs } from '../utils/types';
 
 // create a new log linked to a device by deviceId
@@ -16,8 +17,8 @@ export const exposeAllLogs  =async(adminId: number): Promise<Logs[] | null > => 
           AND: [
             {
               OR: [
-                { role: 'superadmin' },
-                { role: 'admin' }
+                { role: Role.superadmin },
+                { role: Role.admin }
                   ]
             },
             { id: adminId }
@@ -26,7 +27,7 @@ export const exposeAllLogs  =async(adminId: number): Promise<Logs[] | null > => 
 });
     if(!check) return null;
     const result =
-    (check.role==='superadmin') 
+    (check.role===Role.superadmin) 
     ? await prisma.log.findMany({}) 
     : await prisma.log.findMany({
          where: {
@@ -72,7 +73,7 @@ export const getUserScenarioSessionLogs = async(scenarioId: number, userId: numb
 // Clear all Logs
 export const ClearAllLogs = async(superId: number) => {
     const check = await prisma.user.findUnique({where: {id: superId}});
-    if(!check || check.role !== 'superadmin') return null;
+    if(!check || check.role !== Role.superadmin) return null;
     const result = await prisma.log.deleteMany()
     return result;
 } 
