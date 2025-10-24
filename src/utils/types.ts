@@ -1,4 +1,4 @@
-import { difficulty, Status } from "../generated/prisma";
+import { difficulty, Prisma, Status } from "../generated/prisma";
 export { Status };
 
 export type Device = {
@@ -7,6 +7,7 @@ export type Device = {
   type: string; // router, switch, server, load balancer, workstation, firewall, access point
   ipAddress?: string | null;
   pingRate?: number;
+  position: Prisma.JsonValue | null
   latency?: number;
   trafficLoad?: number;
   status?: Status; // online/offline
