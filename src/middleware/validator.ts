@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction  } from 'express';
 import Joi from 'joi';
 
-// DEVICE VALIDATION
+/* DEVICE VALIDATION*/
 const deviceSchema = Joi.object({
   id: Joi.forbidden(),
   name: Joi.string().min(3).max(30).required(),
@@ -20,7 +20,7 @@ export function deviceValidator ( req:Request, res:Response, next:NextFunction) 
 }
 
 
-// SCENARIO VALIDATION
+/* SCENARIO VALIDATION*/
 const scenarioSchema = Joi.object({
     id: Joi.forbidden(),
     name: Joi.string().min(3).required(),
@@ -36,7 +36,7 @@ export function scenarioValidator ( req:Request, res:Response, next:NextFunction
 }
 
 
-// authentication validator
+/* authentication validator*/
 const UserSchema = Joi.object({
   id: Joi.forbidden(),
   username: Joi.string().min(3).max(30).optional(),

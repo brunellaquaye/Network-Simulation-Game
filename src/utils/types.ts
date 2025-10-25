@@ -4,13 +4,13 @@ export { Status };
 export type Device = {
   id: number;
   name: string;
-  type: string; // router, switch, server, load balancer, workstation, firewall, access point
+  type: string; /* router, switch, server, load balancer, workstation, firewall, access point*/
   ipAddress?: string | null;
   pingRate?: number;
   position: Prisma.JsonValue | null;
   latency?: number;
   trafficLoad?: number;
-  status?: Status; // online/offline
+  status?: Status; 
   scenarioId: number;
   lastUpdated?: Date;
 };

@@ -7,7 +7,7 @@ import path from 'path';
 import cors from 'cors'
 import { socketHandler } from './utils/socketHandler';
 import lodash from 'lodash';
-// 
+
 import deviceRoutes from './routes/device.route';
 import authenticationRoutes from './routes/auth.route'
 import { globalErrorHandler } from './middleware/errorHandler';
@@ -22,34 +22,34 @@ const server = createServer(app)
 export const io = new Server(server,{
   cors: { origin: "*"}
 });
-// Load the Swagger YAML file
+/* Load the Swagger YAML file */
 const scenariosSwagger = YAML.load(path.join(__dirname, 'swagger', 'scenarios_devices.yaml'));
 const authenticationSwagger = YAML.load(path.join(__dirname, 'swagger', 'authentication.yaml'));
 
 const swaggerDocument = lodash.merge({},scenariosSwagger,authenticationSwagger)
 
-// middleware to parse JSON requests
+/* middleware to parse JSON requests */
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //swaggerDOcs
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*"}));
 
-// ROUTES
+/* ROUTES*/
 app.use('/api/devices', deviceRoutes);
 app.use('/api', scenarioRoute)
 app.use('/api/authentication', authenticationRoutes);
 
 
-// define a simple route
+/* define a simple route*/
 app.get("/", (req: Request, res: Response) => {
   res.json({message: "Hello, World!"});
 });
 
-// if this handles wrong routing gracefully
+/* if this handles wrong routing gracefully*/
 app.use((req: Request, res: Response, next:NextFunction) => next(createHttpError(404, `Can't find ${req.originalUrl} on this server`)));
 app.use(globalErrorHandler)
 io.on("connection", (socket) => socketHandler(io, socket));
 
 
-// start server
+/* start server*/
 server.listen(PORT, () => console.log(`Server started on port: ${PORT} in ${process.env.NODE_ENV} env`))

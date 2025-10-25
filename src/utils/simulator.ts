@@ -16,24 +16,24 @@ export const simulateDevice = ({
   const errorChance = error_probability / 100;
 
   if (Math.random() < errorChance) {
-    // network instability
+    /* network instability*/
     const change = (Math.random() - 0.5) * 2 * (Max_latency - Min_latency) * 0.3;
     new_latency += change;
   } else {
-    // normal drift
+    /* normal drift*/
     const change = Math.random() * 6 - 3;
     new_latency += change;
   }
 
-  // Recovery when latency is high
+  /* Recovery when latency is high*/
   if (new_latency > 80 && Math.random() < 0.5) {
     new_latency -= Math.random() * 15 + 5;
   }
 
-  // Clamp within bounds
+  /* Clamp within bounds*/
   new_latency = Math.min(Max_latency, Math.max(Min_latency, new_latency));
 
-  // Smarter status logic
+  /* Smarter status logic*/
   let new_status: Status = Status.online;
   if (new_latency >= Max_latency - 15) {
     if (status === Status.offline || Math.random() < 0.8) {
@@ -41,7 +41,7 @@ export const simulateDevice = ({
     }
   }
 
-  // Adjust traffic load
+  /* Adjust traffic load*/
   const new_trafficLoad =
     new_status === Status.offline
       ? 0

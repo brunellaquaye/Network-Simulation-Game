@@ -21,10 +21,6 @@ export const getDeviceWithLogs = catchAsync(async (req:Request, res:Response) =>
         return res.status(200).json({ message: 'Successful Devices retrieval', data : result });
 })
 
-// export const addDevices = catchAsync(async (req:Request, res:Response) => {
-//         const result = await addNewDevice(req.body);
-//         return res.status(201).json({ message: 'Successfully Created Device', data : result });
-// })
 
 export const editDevice = catchAsync(async (req:Request, res:Response) => {
         const id = parseInt(req.params.id);

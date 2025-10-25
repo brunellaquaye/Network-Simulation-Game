@@ -10,7 +10,7 @@ jest.mock('../../services/scenario.services', ()=>({
 }))
 
 import { createScenario, editScenario, getOneScenario, getUserScenarios, removeScenario } from "../../controllers/scenario.controller";
-import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenarios } from "../../services/scenario.services";
+import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenario } from "../../services/scenario.services";
 import createHttpError from 'http-errors';
 import { scenario } from "../mockData";
 
@@ -58,7 +58,7 @@ describe('Testing all scenario Controllers', ()=>{
         const res = mockResponse();
         it('should return a specific scenario', async()=>{
 
-        (getSpecificScenarios as jest.Mock).mockResolvedValue(scenario[0])
+        (getSpecificScenario as jest.Mock).mockResolvedValue(scenario[0])
         await getOneScenario(req, res,next)
 
         expect(res.status).toHaveBeenCalledWith(200)
@@ -66,7 +66,7 @@ describe('Testing all scenario Controllers', ()=>{
         })
 
           it('should hit a notfound error', async()=>{
-            (getSpecificScenarios as jest.Mock).mockResolvedValue(null);
+            (getSpecificScenario as jest.Mock).mockResolvedValue(null);
             try {
                 await getOneScenario(req,res,next);
             } catch (error: any) {

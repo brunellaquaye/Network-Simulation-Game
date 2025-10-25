@@ -18,8 +18,8 @@ jest.mock('../../config/db', () => {
 });
 
 import prisma from "../../config/db";
-import { difficulty } from "../../generated/prisma";
-import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenarios } from "../../services/scenario.services";
+import { Difficulty } from "../../generated/prisma";
+import { addNewScenario, changeScenarioDetails, deleteScenario, getAllUserScenarios, getSpecificScenario  } from "../../services/scenario.services";
 import { scenario } from "../mockData";
 
 
@@ -28,7 +28,7 @@ describe('All Scenario Services', ()=> {
   describe('Getting all Scenarios', ()=>{
     it('should return all available scenarios',async()=>{
       (prisma.scenario.findMany as jest.Mock).mockResolvedValue(scenario[1])
-      const result = await getAllUserScenarios({Userid: scenario[1].userId})
+      const result = await getAllUserScenarios({userId: scenario[1].userId})
       expect(result).toBe(scenario[1])
       expect(prisma.scenario.findMany).toHaveBeenCalledTimes(1);
     })
@@ -37,7 +37,7 @@ describe('All Scenario Services', ()=> {
   describe('Getting Specific Scenario', ()=>{
     it('should return specific scenario with devices', async()=>{
       (prisma.scenario.findUnique as jest.Mock).mockResolvedValue(scenario[0])
-      const result = await getSpecificScenarios({id: 1})
+      const result = await getSpecificScenario({id: 1})
       expect(result).toBe(scenario[0])
       expect(prisma.scenario.findUnique).toHaveBeenCalledTimes(1);
     })
@@ -47,7 +47,7 @@ describe('All Scenario Services', ()=> {
     it('should return a newly created scenario', async()=>{
       let created =  scenario[1];
       (prisma.scenario.create as jest.Mock).mockResolvedValue(scenario[1]);
-      const result = await addNewScenario({userId: created.userId, name: created.name, difficulty: created.difficulty as difficulty, timeLimit: created.timeLimit});
+      const result = await addNewScenario({userId: created.userId, name: created.name, difficulty: created.difficulty as Difficulty, timeLimit: created.timeLimit});
       expect(result).toBe(created)
       expect(prisma.scenario.create).toHaveBeenCalledTimes(1);
   });
@@ -55,8 +55,8 @@ describe('All Scenario Services', ()=> {
 });
   describe('Changing details of scenario', ()=>{
    it('should return changed details of scenario', async () => {
-    const payload = { id: 6, name: "univerIo", difficulty: "medium" as difficulty, timeLimit: 20 };
-    const updated = { id: 6, name: "univerTo", difficulty: "medium" as difficulty, timeLimit: 20 };
+    const payload = { id: 6, name: "univerIo", difficulty: "medium" as Difficulty, timeLimit: 20 };
+    const updated = { id: 6, name: "univerTo", difficulty: "medium" as Difficulty, timeLimit: 20 };
 
     (prisma.scenario.findFirst as jest.Mock).mockResolvedValue({ id: 6 });
     (prisma.scenario.update as jest.Mock).mockResolvedValue(updated);

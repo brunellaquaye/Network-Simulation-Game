@@ -3,7 +3,7 @@ import { logger } from "./logger";
 
 export function socketHandler(io: Server, socket: Socket) {
   logger(`New connection: ${socket.id}`);
-  // we want to be sending messages to only specific simulation sections
+  /* we want to be sending messages to only specific simulation sections*/
   socket.on("JoinRoom", (userId) => {
     socket.join(userId);
     logger(`User: ${userId} joined room`);

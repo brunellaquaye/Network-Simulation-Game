@@ -42,7 +42,6 @@ export const createScenario = catchAsync(async(req:Request, res:Response)  => {
 
 })
 
-// we can edit scenarios but the user cannot be changed
 export const editScenario = catchAsync(async(req:Request, res:Response)  => {
  
         const id = parseInt(req.params.id);

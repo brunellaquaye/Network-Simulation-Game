@@ -22,7 +22,7 @@ export async function getAllUserScenarios({
  */
 export async function getAllScenarios(): Promise<Scenario[]> {
   return await prisma.scenario.findMany({
-    include: { user: { select: { username: true, role: true } } }, // optional context
+    include: { user: { select: { username: true, role: true } } }, 
   });
 }
 

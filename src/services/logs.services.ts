@@ -18,7 +18,7 @@ export const createSessionLog = async (data: Logs): Promise<Logs> => {
 };
 
 /**
- * Get ALL logs (only Superadmin can do this)
+ * Get ALL logs (only admin and Superadmin can do this)
  */
 export const exposeAllLogs = async (adminId: number): Promise<Logs[] | null> => {
   const user = await prisma.user.findUnique({ where: { id: adminId } });
@@ -32,7 +32,6 @@ export const exposeAllLogs = async (adminId: number): Promise<Logs[] | null> => 
   }
 
   if (user.role === Role.admin) {
-    // Fetch logs only for sessions under their scenarios
     return await prisma.log.findMany({
       where: {
         session: {

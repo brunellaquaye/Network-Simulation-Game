@@ -49,14 +49,16 @@ describe('Device Services', () => {
 
   describe('addNewDevice', () => {
     it('should create and return a new device and call prisma.create with correct data', async () => {
-      const newDevice = { scenarioId: 1, name: 'Device A', type: 'router' };
+      const newDevice = { scenarioId: 1, name: 'Device A', type: 'router', position: {
+        x: 607.8460998535156,
+        y: 446.0918846130371
+      } };
       const created = { id: 4, ...newDevice };
       (prisma.device.create as jest.Mock).mockResolvedValue(created);
 
       const result = await addNewDevice(newDevice);
       expect(result).toEqual(created);
 
-      // ensure prisma.create received the expected shape
       expect(prisma.device.create).toHaveBeenCalledTimes(1);
       expect(prisma.device.create).toHaveBeenCalledWith({
         data: {
@@ -68,7 +70,10 @@ describe('Device Services', () => {
     });
 
     it('should propagate errors from prisma.create', async () => {
-      const newDevice = { scenarioId: 1, name: 'Device A', type: 'router' };
+            const newDevice = { scenarioId: 1, name: 'Device A', type: 'router', position: {
+        x: 607.8460998535156,
+        y: 446.0918846130371
+      } };
       (prisma.device.create as jest.Mock).mockRejectedValue(new Error('Create failed'));
       await expect(addNewDevice(newDevice)).rejects.toThrow('Create failed');
     });
