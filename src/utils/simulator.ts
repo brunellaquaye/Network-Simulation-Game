@@ -1,12 +1,12 @@
-import { Device, Status} from "./types";
+import { SessionDevice, Status} from "./types";
 
 export const simulateDevice = ({
   device,
   randomness,
 }: {
-  device: Device;
+  device: SessionDevice;
   randomness?: { Max_latency?: number; Min_latency?: number; error_probability?: number };
-}): Device => {
+}): SessionDevice => {
   const Max_latency = randomness?.Max_latency ?? 100;
   const Min_latency = randomness?.Min_latency ?? 10;
   const error_probability = randomness?.error_probability ?? 100;
@@ -52,6 +52,6 @@ export const simulateDevice = ({
     latency: new_latency,
     trafficLoad: new_trafficLoad,
     status: new_status,
-    lastUpdated: new Date(),
+    lastUpdated: new Date()
   };
 };

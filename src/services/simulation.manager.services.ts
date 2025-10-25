@@ -1,6 +1,6 @@
 // src/services/simulation.manager.ts
 import { logger } from "../utils/logger";
-import { runScenarioSimulation } from "./simulation.services";
+import { runSessionSimulation } from "./simulation.services";
 
 const simulationLoops = new Map<number, NodeJS.Timeout>();
 
@@ -9,14 +9,14 @@ export function startSimulationLoop(id: number, randomness: any) {
 
   const interval = setInterval(async () => {
     try {
-      await runScenarioSimulation({ id, randomness });
+      await runSessionSimulation({ sessionId: id, randomness });
     } catch (err) {
-      logger(`Simulation ${id} failed:`, err);
+      logger(`Simulation Session ${id} failed:`, err);
     }
   }, 5000); // every 5 seconds
 
   simulationLoops.set(id, interval);
-  logger(`Simulation ${id} started.`);
+  logger(`Simulation session ${id} started.`);
 }
 
 export function stopSimulationLoop(id: number) {
@@ -24,7 +24,7 @@ export function stopSimulationLoop(id: number) {
   if (interval) {
     clearInterval(interval);
     simulationLoops.delete(id);
-    logger(`Simulation ${id} stopped.`);
+    logger(`Simulation session ${id} stopped.`);
   }
 }
 

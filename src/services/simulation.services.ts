@@ -1,62 +1,98 @@
+import prisma from "../config/db";
 import { simulateDevice } from "../utils/simulator";
-import { changeDeviceDetails } from "./device.services";
-import { Device, Logs, Scenario, Status } from "../utils/types";
-import { getSpecificScenarios } from "./scenario.services";
-import { createDeviceLog } from "./logs.services";
+import { SessionDevice, Status } from "../generated/prisma";
+import { createSessionLog } from "./logs.services";
 import { io } from "../server";
 
-export async function runScenarioSimulation({
-  id,
+/**
+ * Run a live simulation tick for a player's session
+ */
+export async function runSessionSimulation({
+  sessionId,
   randomness,
 }: {
-  id: number;
+  sessionId: number;
   randomness: object;
-}): Promise<(Scenario & { devices: Device[] }) | null> {
-  const scenario = (await getSpecificScenarios({ id, addDevices: "true" })) as
-    | (Scenario & { devices: Device[] })
-    | null;
+}) {
+  /**
+   Get the active simulation session with all session devices
+   */
+  const session = await prisma.simulationSession.findUnique({
+    where: { id: sessionId },
+    include: { devices: true },
+  });
 
-  if (!scenario || !scenario.devices?.length) return null;
+  if (!session || !session.devices.length) return null;
 
-  const updatedDevices: Device[] = [];
-  const logsToCreate: Logs[] = [];
+  const updatedDevices: SessionDevice[] = [];
+  const logsToCreate: {
+    sessionId: number;
+    deviceId?: number;
+    eventType: string;
+    message: string;
+  }[] = [];
 
-  for (let device of scenario.devices) {
+  /** 
+  Run the simulation logic for each device
+     */ 
+  for (const device of session.devices) {
     const oldStatus = device.status as Status;
     const new_state = simulateDevice({
-      device: { ...device, status: device.status as Status },
+      device: { ...device, status: device.status as Status } as SessionDevice,
       randomness,
     });
 
     updatedDevices.push(new_state);
 
+    /**
+     If status changes, log it
+    */
     if (oldStatus !== new_state.status) {
       const itFailed = new_state.status === Status.offline;
       logsToCreate.push({
+        sessionId: session.id,
         deviceId: new_state.id,
         eventType: itFailed ? "failure" : "recovery",
         message: itFailed
           ? `Device ${device.name} went offline.`
-          : `Device ${device.name} is back online.`,
+          : `Device ${device.name} recovered.`,
       });
     }
   }
 
-  // Apply DB updates and logs
+  /**
+  Apply DB updates and logs
+     */
   await Promise.all([
-    ...updatedDevices.map(changeDeviceDetails),
-    ...logsToCreate.map(createDeviceLog),
+    ...updatedDevices.map((d) =>
+      prisma.sessionDevice.update({
+        where: { id: d.id },
+        data: {
+          status: d.status,
+          latency: d.latency,
+          trafficLoad: d.trafficLoad,
+          lastUpdated: new Date(),
+        },
+      })
+    ),
+    ...logsToCreate.map(createSessionLog),
   ]);
 
-  
-    // io.to(userId).emit("deviceUpdate", { //emit to specific rooms
-    io.emit("deviceUpdate", {
-      scenarioId: id,
-      updatedDevices,
-      logsToCreate,
-      timestamp: new Date(),
-    });
- 
+  /**
+   Emit updates to frontend (socket.io)
+   */
+  io.to(`session_${sessionId}`).emit("sessionUpdate", {
+    sessionId,
+    updatedDevices,
+    logs: logsToCreate,
+    timestamp: new Date(),
+  });
 
-  return { ...scenario, devices: updatedDevices };
+  /**
+   Return the refreshed session state
+    */
+  return {
+    ...session,
+    devices: updatedDevices,
+  };
 }

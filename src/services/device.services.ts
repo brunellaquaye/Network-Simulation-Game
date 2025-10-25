@@ -1,55 +1,85 @@
 import prisma from '../config/db';
 import { Prisma } from '../generated/prisma';
-import { Device, Logs } from '../utils/types';
+import { Device } from '../utils/types';
 
-export async function checkAvailability(id: number){
-   return await prisma.device.findFirst({where: {id}})
+/*
+*  Check if a base (admin) device exists
+ */
+export async function checkAvailability(id: number) {
+  return await prisma.device.findFirst({ where: { id } });
 }
 
+/**
+*Get all base devices (admin/dev mode)
+ */ 
 export async function getAllDevices(): Promise<Device[]> {
-    const results = await prisma.device.findMany();
-    return results;
-}                                           
-export async function  getDeviceLogs(id: number): Promise<Device & {logs: Logs[]} | null> {
-    const check = await checkAvailability(id!); if (!check) return null;
-    const results = await prisma.device.findUnique({where: {id: id},include: {logs:true}});
-    return results;
+  return await prisma.device.findMany();
 }
 
-export async function addNewDevice(data: Omit<Device, 'id'>): Promise<Device>{
-    const results = await prisma.device.create({
-        data: {
-            ...data, 
-            position: data.position as Prisma.InputJsonValue
-        }
-    });
-    return results;
+/*
+ ✅ Get all logs for a *base* device (for admin analysis only)
+ */
+export async function getDeviceLogs(id: number) {
+  const check = await checkAvailability(id);
+  if (!check) return null;
+
+  /*
+   Base logs are optional — mostly used by admin scenarios
+   */
+  const results = await prisma.log.findMany({
+    where: { deviceId: id },
+  });
+  return { ...check, logs: results };
 }
 
-
-export async function changeDeviceDetails({id,name, type,ipAddress,pingRate,latency,trafficLoad, status}: Partial<Device>): Promise<Device | null> {
-    const check = await checkAvailability(id!); if (!check) return null;
-    const results = await prisma.device.update({
-        where: { id: id }, 
-        data: { 
-            name: name,
-            type: type,
-            ipAddress: ipAddress,
-            pingRate: pingRate,
-            latency: latency,
-            status: status,
-            trafficLoad: trafficLoad
-         }
-    });
-    return results;
+/*
+ Add a new base device to a scenario (admin)
+  */
+export async function addNewDevice(data: Omit<Device, 'id'>): Promise<Device> {
+  return await prisma.device.create({
+    data: {
+      ...data,
+      position: data.position as Prisma.InputJsonValue,
+    },
+  });
 }
 
-export async function deleteDevice({id}: {id: number} ): Promise<Device | null> {
-    const check = await checkAvailability(id); if (!check) return null;
-    const results = await prisma.device.delete({
-        where: { id: id } 
-    });
-    return results;
+/*
+ Update base device details
+  */
+export async function changeDeviceDetails({
+  id,
+  name,
+  type,
+  ipAddress,
+  pingRate,
+  latency,
+  trafficLoad,
+  status,
+}: Partial<Device>): Promise<Device | null> {
+  const check = await checkAvailability(id!);
+  if (!check) return null;
+
+  return await prisma.device.update({
+    where: { id },
+    data: {
+      name,
+      type,
+      ipAddress,
+      pingRate,
+      latency,
+      trafficLoad,
+      status,
+    },
+  });
 }
 
+/*
+ Delete a base device
+ */
+export async function deleteDevice({ id }: { id: number }): Promise<Device | null> {
+  const check = await checkAvailability(id);
+  if (!check) return null;
 
+  return await prisma.device.delete({ where: { id } });
+}

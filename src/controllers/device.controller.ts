@@ -1,5 +1,5 @@
 import {Request,Response} from 'express';
-import { changeDeviceDetails, getAllDevices, addNewDevice, deleteDevice, getDeviceLogs } from '../services/device.services';
+import { changeDeviceDetails, getAllDevices, deleteDevice, getDeviceLogs } from '../services/device.services';
 import { catchAsync } from '../utils/catchAsync';
 import createHttpError from 'http-errors';
 
@@ -12,7 +12,7 @@ export const getDevices = catchAsync(async (req:Request, res:Response) => {
         return res.status(200).json({ message: 'Successful Devices retrieval', data : result });
 })
 
-export const getDevicesWithLogs = catchAsync(async (req:Request, res:Response) => {
+export const getDeviceWithLogs = catchAsync(async (req:Request, res:Response) => {
         
         const id = parseInt(req.params.id)
         const result = await getDeviceLogs(id);
@@ -21,10 +21,10 @@ export const getDevicesWithLogs = catchAsync(async (req:Request, res:Response) =
         return res.status(200).json({ message: 'Successful Devices retrieval', data : result });
 })
 
-export const addDevices = catchAsync(async (req:Request, res:Response) => {
-        const result = await addNewDevice(req.body);
-        return res.status(201).json({ message: 'Successfully Created Device', data : result });
-})
+// export const addDevices = catchAsync(async (req:Request, res:Response) => {
+//         const result = await addNewDevice(req.body);
+//         return res.status(201).json({ message: 'Successfully Created Device', data : result });
+// })
 
 export const editDevice = catchAsync(async (req:Request, res:Response) => {
         const id = parseInt(req.params.id);

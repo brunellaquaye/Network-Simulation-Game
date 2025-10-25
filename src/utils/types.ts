@@ -1,4 +1,4 @@
-import { difficulty, Prisma, Status } from "../generated/prisma";
+import { Difficulty, Prisma, Status } from "../generated/prisma";
 export { Status };
 
 export type Device = {
@@ -7,7 +7,7 @@ export type Device = {
   type: string; // router, switch, server, load balancer, workstation, firewall, access point
   ipAddress?: string | null;
   pingRate?: number;
-  position: Prisma.JsonValue | null
+  position: Prisma.JsonValue | null;
   latency?: number;
   trafficLoad?: number;
   status?: Status; // online/offline
@@ -18,16 +18,41 @@ export type Device = {
 export type Scenario = {
   id?: number;
   name: string;
-  difficulty: difficulty;
+  difficulty: Difficulty;
   timeLimit: number;
   createdAt?: Date;
   userId: number;
 };
 
+/*  Player-specific simulation instance */
+export type SimulationSession = {
+  id?: number;
+  scenarioId: number;
+  userId: number;
+  startedAt?: Date;
+  endedAt?: Date | null;
+  isActive: boolean;
+};
+
+/* Device clone for each player's session */
+export type SessionDevice = {
+  id: number;
+  sessionId: number;
+  name: string;
+  type: string;
+  ipAddress: string | null;
+  pingRate: number;
+  latency: number;
+  trafficLoad: number;
+  status: Status;
+  lastUpdated: Date;
+};
+
 export type Logs = {
   id?: number;
-  deviceId: number;
+  sessionId: number;
+  deviceId?: number | null;
   timestamp?: Date;
-  eventType: string; //failure, recovery
+  eventType: string /* e.g. "failure", "recovery" */;
   message: string;
 };
